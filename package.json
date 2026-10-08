@@ -17,7 +17,8 @@
     "cordis.patch.yml",
     "README.md",
     "README.zh-CN.md",
-    "LICENSE"
+    "LICENSE",
+    "docs"
   ],
   "keywords": [
     "deepseek-harness",

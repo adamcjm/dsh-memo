@@ -6,6 +6,18 @@
 
 > 为「聊天里突然冒出来的需求变更和临时待办」而做：**几秒记下来、事后找得回来、有上下文、不丢**。
 
+<p align="center">
+  <img src="docs/images/demo.gif" width="720" alt="记一条并自动同步到 GitHub"><br>
+  <sub>打字 → 回车 → 三十秒后自动出现在你的 GitHub 私有仓库里</sub>
+</p>
+
+| 主面板 | 记一条（可带图片） |
+|:---:|:---:|
+| [![主面板](docs/images/panel.png)](docs/images/panel.png) | [![记录中](docs/images/compose.png)](docs/images/compose.png) |
+| **全文搜索** | **GitHub 同步设置** |
+| [![搜索](docs/images/search.png)](docs/images/search.png) | [![设置](docs/images/settings.png)](docs/images/settings.png) |
+
+
 ---
 
 ## 特性

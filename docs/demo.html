@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>dsh-memo 演示</title>
+<style>
+/* ── DSH 主题 token（深色） ── */
+:root{
+  --dsw-alias-bg-base:#0f1012; --dsw-alias-bg-layer-1:#17191c; --dsw-alias-bg-layer-2:#1e2125;
+  --dsw-alias-bg-overlay:#25282d; --dsw-alias-border-l1:#282b30; --dsw-alias-border-l2:#3a3e45;
+  --dsw-alias-brand-primary:#4d6bfe; --dsw-alias-label-primary:#e9ebee; --dsw-alias-label-secondary:#9ba1a8;
+  --dsw-alias-state-success-primary:#3ecf8e; --dsw-alias-state-error-primary:#ff5c5c;
+  --dsw-alias-state-warn-primary:#ffa94d; --dsw-alias-state-idle-primary:#6b7178;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:#08090a}
+body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Helvetica Neue",sans-serif;-webkit-font-smoothing:antialiased}
+svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.thumb svg{width:100%;height:100%;display:block;stroke:none}
+/* demo 里用 <svg> 模拟照片，真机用的是 <img>；这里给它和 .dm-imgs img 同样的尺寸约束 */
+.dm-imgs svg{width:76px;height:76px;border-radius:8px;border:1px solid var(--dsw-alias-border-l1);display:block;stroke:none;flex:none}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+input,textarea{font:inherit;color:inherit;background:none;border:none;outline:none}
+
+/* ── 真实插件样式（构建时从 lib/client.js 注入，保证与真机同源） ── */
+.dm-wrap{display:flex;flex-direction:column;height:100%;min-height:0;background:var(--dsw-alias-bg-base);color:var(--dsw-alias-label-primary);font-size:13px}
+.dm-head{display:flex;align-items:center;gap:10px;padding:12px 18px;border-bottom:1px solid var(--dsw-alias-border-l1);flex:none}
+.dm-head h2{font-size:14.5px;font-weight:650;margin:0;letter-spacing:-.2px}
+.dm-count{color:var(--dsw-alias-label-secondary);font-size:12px;opacity:.85}
+.dm-spacer{flex:1}
+.dm-chip{padding:4px 10px;border-radius:14px;border:1px solid var(--dsw-alias-border-l1);background:var(--dsw-alias-bg-layer-1);color:var(--dsw-alias-label-secondary);font-size:11.5px;cursor:pointer;white-space:nowrap}
+.dm-chip:hover{border-color:var(--dsw-alias-border-l2);color:var(--dsw-alias-label-primary)}
+.dm-chip.on{background:color-mix(in srgb, var(--dsw-alias-brand-primary) 16%, transparent);border-color:var(--dsw-alias-brand-primary);color:var(--dsw-alias-brand-primary);font-weight:600}
+.dm-sync{display:inline-flex;align-items:center;gap:6px;padding:4px 9px;border-radius:8px;border:1px solid var(--dsw-alias-border-l1);background:var(--dsw-alias-bg-layer-1);font-size:11.5px;color:var(--dsw-alias-label-secondary);cursor:pointer}
+.dm-dot{width:6px;height:6px;border-radius:50%;background:var(--dsw-alias-state-success-primary)}
+.dm-dot.off{background:var(--dsw-alias-state-idle-primary)}
+.dm-dot.err{background:var(--dsw-alias-state-error-primary)}
+.dm-compose{margin:14px 18px 0;border:1px solid var(--dsw-alias-border-l1);border-radius:11px;background:var(--dsw-alias-bg-layer-1);overflow:hidden;flex:none}
+.dm-compose:focus-within{border-color:var(--dsw-alias-brand-primary);box-shadow:0 0 0 3px color-mix(in srgb, var(--dsw-alias-brand-primary) 14%, transparent)}
+.dm-ta{width:100%;box-sizing:border-box;padding:11px 13px 8px;border:none;outline:none;background:transparent;color:inherit;font:inherit;line-height:1.6;resize:vertical;min-height:80px;max-height:340px;display:block}
+.dm-ta::placeholder{color:var(--dsw-alias-label-secondary);opacity:.7}
+.dm-thumbs{display:flex;gap:7px;padding:0 13px 6px;flex-wrap:wrap}
+.dm-thumb{position:relative;width:56px;height:56px;border-radius:7px;overflow:hidden;border:1px solid var(--dsw-alias-border-l2)}
+.dm-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.dm-thumb button{position:absolute;top:2px;right:2px;width:16px;height:16px;border-radius:5px;border:none;background:rgba(0,0,0,.6);color:#fff;font-size:11px;line-height:1;cursor:pointer}
+.dm-row{display:flex;align-items:center;gap:6px;padding:6px 9px 8px;border-top:1px solid var(--dsw-alias-border-l1);flex-wrap:wrap}
+.dm-btn{display:inline-flex;align-items:center;gap:5px;padding:5px 9px;border-radius:7px;border:none;background:transparent;color:var(--dsw-alias-label-secondary);font:inherit;font-size:12px;cursor:pointer}
+.dm-btn:hover{background:var(--dsw-alias-bg-layer-2);color:var(--dsw-alias-label-primary)}
+.dm-btn.pri{background:var(--dsw-alias-brand-primary);color:#fff;font-weight:560;padding:5px 14px}
+.dm-btn.pri:disabled{opacity:.5;cursor:default}
+.dm-hint{color:var(--dsw-alias-label-secondary);font-size:11px;opacity:.7;margin-left:2px}
+.dm-syncbtn{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:8px;border:1px solid var(--dsw-alias-border-l1);background:var(--dsw-alias-bg-layer-1);color:var(--dsw-alias-label-secondary);font:inherit;font-size:11.5px;cursor:pointer}
+.dm-syncbtn:hover:not(:disabled){border-color:var(--dsw-alias-brand-primary);color:var(--dsw-alias-brand-primary)}
+.dm-syncbtn:disabled{opacity:.55;cursor:default}
+@keyframes dm-spin{to{transform:rotate(360deg)}}
+.dm-spin{animation:dm-spin .9s linear infinite}
+.dm-toast{position:fixed;left:50%;top:20px;transform:translateX(-50%);z-index:950;display:flex;align-items:center;gap:9px;padding:10px 15px;border-radius:10px;font-size:12.5px;font-weight:520;background:var(--dsw-alias-bg-overlay);box-shadow:0 12px 34px rgba(0,0,0,.38);border:1px solid;max-width:min(440px,86vw);animation:dm-toast-in .2s ease-out}
+.dm-toast.ok{border-color:var(--dsw-alias-state-success-primary);color:var(--dsw-alias-state-success-primary)}
+.dm-toast.err{border-color:var(--dsw-alias-state-error-primary);color:var(--dsw-alias-state-error-primary)}
+@keyframes dm-toast-in{from{opacity:0;transform:translate(-50%,-10px)}to{opacity:1;transform:translate(-50%,0)}}
+.dm-tagbox{display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:2px 18px 6px;flex:none}
+.dm-tagnew{padding:1px 8px;border-radius:5px;font-size:10.5px;background:transparent;border:1px dashed var(--dsw-alias-border-l2);color:var(--dsw-alias-label-secondary);opacity:.9;white-space:nowrap}
+.dm-filters{display:flex;gap:6px;padding:11px 18px 4px;flex-wrap:wrap;flex:none}
+.dm-list{flex:1;overflow-y:auto;padding:6px 18px 24px;min-height:0}
+.dm-day{display:flex;align-items:center;gap:9px;padding:13px 2px 7px;color:var(--dsw-alias-label-secondary);font-size:11px;font-weight:600;opacity:.75}
+.dm-day:after{content:"";flex:1;height:1px;background:var(--dsw-alias-border-l1)}
+.dm-card{display:flex;gap:10px;padding:10px 12px;border-radius:10px;border:1px solid transparent;margin-bottom:3px;position:relative}
+.dm-card:hover{background:var(--dsw-alias-bg-layer-1);border-color:var(--dsw-alias-border-l1)}
+.dm-cb{width:16px;height:16px;border-radius:50%;border:1.6px solid var(--dsw-alias-border-l2);flex:none;margin-top:2px;cursor:pointer;display:grid;place-items:center;color:transparent;background:transparent;padding:0}
+.dm-cb:hover{border-color:var(--dsw-alias-brand-primary)}
+.dm-card.done .dm-cb{background:var(--dsw-alias-state-success-primary);border-color:var(--dsw-alias-state-success-primary);color:#fff}
+.dm-card.done .dm-body{opacity:.45}
+.dm-card.done .dm-txt{text-decoration:line-through}
+.dm-body{flex:1;min-width:0}
+.dm-txt{font-size:13px;line-height:1.62;white-space:pre-wrap;word-break:break-word}
+.dm-meta{display:flex;align-items:center;gap:8px;margin-top:4px;flex-wrap:wrap;font-size:11.5px;color:var(--dsw-alias-label-secondary);opacity:.85}
+.dm-tag{padding:1px 7px;border-radius:5px;font-size:11px;background:var(--dsw-alias-bg-layer-2);border:1px solid var(--dsw-alias-border-l1);cursor:pointer}
+.dm-tag:hover{border-color:var(--dsw-alias-brand-primary);color:var(--dsw-alias-brand-primary)}
+.dm-imgs{display:flex;gap:6px;margin-top:7px;flex-wrap:wrap}
+.dm-imgs img{width:76px;height:76px;object-fit:cover;border-radius:8px;border:1px solid var(--dsw-alias-border-l1);cursor:zoom-in;display:block}
+.dm-act{position:absolute;right:10px;top:9px;display:none;gap:3px}
+.dm-card:hover .dm-act{display:flex}
+.dm-ib{width:25px;height:25px;border-radius:6px;display:grid;place-items:center;border:1px solid var(--dsw-alias-border-l1);background:var(--dsw-alias-bg-layer-2);color:var(--dsw-alias-label-secondary);cursor:pointer;padding:0}
+.dm-ib:hover{color:var(--dsw-alias-label-primary);border-color:var(--dsw-alias-border-l2)}
+.dm-empty{display:flex;flex-direction:column;align-items:center;gap:8px;padding:60px 20px;color:var(--dsw-alias-label-secondary);text-align:center;opacity:.8}
+.dm-err{margin:12px 18px 0;padding:9px 12px;border-radius:9px;font-size:12px;border:1px solid var(--dsw-alias-state-error-primary);color:var(--dsw-alias-state-error-primary);background:color-mix(in srgb, var(--dsw-alias-state-error-primary) 8%, transparent)}
+.dm-view{position:fixed;inset:0;z-index:900;background:rgba(0,0,0,.72);display:grid;place-items:center;cursor:zoom-out}
+.dm-view img{max-width:92vw;max-height:92vh;border-radius:10px;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+.dm-modal{position:fixed;inset:0;z-index:901;background:rgba(0,0,0,.55);display:grid;place-items:center}
+.dm-dlg{width:520px;max-width:92vw;background:var(--dsw-alias-bg-overlay);border:1px solid var(--dsw-alias-border-l2);border-radius:14px;padding:18px 20px;box-shadow:0 24px 60px rgba(0,0,0,.5)}
+.dm-dlg h3{margin:0 0 4px;font-size:14px;font-weight:650}
+.dm-dlg .sub{color:var(--dsw-alias-label-secondary);font-size:11.5px;margin-bottom:14px;line-height:1.6}
+.dm-field{margin-bottom:12px}
+.dm-field label{display:block;font-size:10.5px;font-weight:650;letter-spacing:.4px;text-transform:uppercase;color:var(--dsw-alias-label-secondary);margin-bottom:5px}
+.dm-field input{width:100%;box-sizing:border-box;padding:7px 10px;border-radius:8px;font:inherit;font-size:12.5px;border:1px solid var(--dsw-alias-border-l1);background:var(--dsw-alias-bg-layer-1);color:inherit;outline:none}
+.dm-field input:focus{border-color:var(--dsw-alias-brand-primary)}
+.dm-field .help{font-size:11px;color:var(--dsw-alias-label-secondary);margin-top:4px;line-height:1.5;opacity:.85}
+.dm-dlgfoot{display:flex;align-items:center;gap:8px;margin-top:16px}
+
+/* ── 演示页排版 ── */
+.page{position:relative;width:960px;height:660px;overflow:hidden;background:var(--dsw-alias-bg-base);display:flex;flex-direction:column}
+.dm-wrap{flex:1;min-height:0}
+.page{display:none}
+</style>
+</head>
+<body data-scene="panel" data-frame="1">
+
+<!-- ================= 主面板 ================= -->
+<div class="page scene scene-panel">
+<div class="dm-wrap">
+
+  <div class="dm-head">
+    <h2>备忘录</h2>
+    <span class="dm-count">128 条 · 7 条待处理</span>
+    <span class="dm-spacer"></span>
+    <span class="dm-sync"><span class="dm-dot"></span>已同步</span>
+    <button class="dm-syncbtn">
+      <svg viewBox="0 0 24 24" width="13" height="13"><path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 3v6h-6"/></svg>
+      立即同步
+    </button>
+    <input value="" placeholder="搜索…" style="width:150px;padding:5px 9px;border-radius:8px;font:inherit;font-size:12px;border:1px solid var(--dsw-alias-border-l1);background:var(--dsw-alias-bg-layer-1);color:inherit">
+    <button class="dm-ib">
+      <svg viewBox="0 0 24 24" width="14" height="14"><path d="M3 6h18M3 12h18M3 18h18"/><circle cx="9" cy="6" r="2.2"/><circle cx="15" cy="12" r="2.2"/><circle cx="8" cy="18" r="2.2"/></svg>
+    </button>
+  </div>
+
+  <!-- 快速记录：空态（主面板场景） -->
+  <div class="dm-compose">
+    <textarea class="dm-ta" placeholder="记点什么…  例：张总要登录页加微信扫码，下周三前给原型 #需求变更"></textarea>
+    <div class="dm-row">
+      <button class="dm-btn">
+        <svg viewBox="0 0 24 24" width="13" height="13"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        图片
+      </button>
+      <span class="dm-hint">Enter 保存 · ⇧Enter 换行 · 图片可多选 · 打 #标签 自动创建</span>
+      <span class="dm-spacer"></span>
+      <button class="dm-btn pri">保存</button>
+    </div>
+  </div>
+
+  <div class="dm-filters">
+    <button class="dm-chip on">全部 128</button>
+    <button class="dm-chip">待处理 7</button>
+    <button class="dm-chip">已完成 121</button>
+    <button class="dm-chip">今天 9</button>
+    <button class="dm-chip">置顶</button>
+  </div>
+
+  <div class="dm-tagbox">
+    <span style="opacity:.7">标签</span>
+    <button class="dm-chip">#需求变更 23</button>
+    <button class="dm-chip">#跟进 12</button>
+    <button class="dm-chip">#待办 9</button>
+    <button class="dm-chip">#客户 6</button>
+    <button class="dm-chip">#灵感 4</button>
+    <span class="dm-tagnew">打 #名字 新建</span>
+  </div>
+
+  <div class="dm-list">
+    <div class="dm-day">今天</div>
+
+    <div class="dm-card">
+      <button class="dm-cb"></button>
+      <div class="dm-body">
+        <div class="dm-txt">张总说登录页要加「微信扫码」入口，下周三前给一版原型</div>
+        <div class="dm-meta">
+          <span class="dm-tag">#需求变更</span><span class="dm-tag">#登录</span>
+          <span>来源：张总</span><span>14:32</span>
+        </div>
+        <div class="dm-imgs">
+          <svg viewBox="0 0 76 76" width="76" height="76"><rect width="76" height="76" fill="#1f2a3d"/><rect x="8" y="10" width="44" height="7" rx="3.5" fill="#5b7bc4"/><rect x="8" y="23" width="60" height="5" rx="2.5" fill="#3d5480"/><rect x="8" y="33" width="52" height="5" rx="2.5" fill="#3d5480"/><rect x="8" y="43" width="30" height="5" rx="2.5" fill="#3d5480"/><rect x="8" y="55" width="42" height="5" rx="2.5" fill="#4a6396"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="dm-card">
+      <button class="dm-cb"></button>
+      <div class="dm-body">
+        <div class="dm-txt">周五前把 Q4 排期表发给李工，他那边要提前排人力</div>
+        <div class="dm-meta">
+          <span class="dm-tag">#待办</span>
+          <span>来源：Q4 排期讨论</span><span>11:05</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="dm-day">昨天</div>
+
+    <div class="dm-card">
+      <button class="dm-cb"></button>
+      <div class="dm-body">
+        <div class="dm-txt">客户反馈导出报表缺少「负责人」字段，等产品确认口径后回复</div>
+        <div class="dm-meta">
+          <span class="dm-tag">#跟进</span><span class="dm-tag">#客户</span>
+          <span>来源：客户群</span><span>昨天 18:20</span>
+        </div>
+        <div class="dm-imgs">
+          <svg viewBox="0 0 76 76" width="76" height="76"><rect width="76" height="76" fill="#2a2135"/><rect x="7" y="9" width="62" height="44" rx="4" fill="#3d2f4d"/><rect x="13" y="16" width="26" height="5" rx="2.5" fill="#8b6fb0"/><rect x="13" y="27" width="48" height="4" rx="2" fill="#6a5580"/><rect x="13" y="36" width="40" height="4" rx="2" fill="#6a5580"/></svg>
+          <svg viewBox="0 0 76 76" width="76" height="76"><rect width="76" height="76" fill="#20302a"/><rect x="9" y="13" width="58" height="36" rx="4" fill="#2c4239"/><rect x="15" y="21" width="32" height="5" rx="2.5" fill="#5fa080"/><rect x="15" y="31" width="44" height="4" rx="2" fill="#456b58"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="dm-card done">
+      <button class="dm-cb"><svg viewBox="0 0 24 24" style="width:11px;height:11px"><path d="M20 6L9 17l-5-5"/></svg></button>
+      <div class="dm-body">
+        <div class="dm-txt">确认下周一评审会议时间改到 10:00</div>
+        <div class="dm-meta"><span>昨天 09:41</span></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ================= 记录中（含图片） ================= -->
+<div class="page scene scene-compose" style="display:none">
+<div class="dm-wrap">
+  <div class="dm-head">
+    <h2>备忘录</h2><span class="dm-count">129 条 · 8 条待处理</span><span class="dm-spacer"></span>
+    <span class="dm-sync"><span class="dm-dot"></span>已同步</span>
+    <button class="dm-syncbtn"><svg viewBox="0 0 24 24" width="13" height="13"><path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 3v6h-6"/></svg>立即同步</button>
+    <input placeholder="搜索…" style="width:150px;padding:5px 9px;border-radius:8px;font:inherit;font-size:12px;border:1px solid var(--dsw-alias-border-l1);background:var(--dsw-alias-bg-layer-1);color:inherit">
+    <button class="dm-ib"><svg viewBox="0 0 24 24" width="14" height="14"><path d="M3 6h18M3 12h18M3 18h18"/><circle cx="9" cy="6" r="2.2"/><circle cx="15" cy="12" r="2.2"/><circle cx="8" cy="18" r="2.2"/></svg></button>
+  </div>
+
+  <div class="dm-compose" style="border-color:var(--dsw-alias-brand-primary)">
+    <textarea class="dm-ta">王工刚说接口字段要加 version，老客户端会挂，需要在服务端做兼容 #需求变更 #接口</textarea>
+    <div class="dm-thumbs">
+      <div class="dm-thumb">
+        <svg viewBox="0 0 56 56" width="56" height="56"><rect width="56" height="56" fill="#1f2a3d"/><rect x="6" y="8" width="34" height="6" rx="3" fill="#5b7bc4"/><rect x="6" y="18" width="44" height="4" rx="2" fill="#3d5480"/><rect x="6" y="26" width="38" height="4" rx="2" fill="#3d5480"/><rect x="6" y="34" width="24" height="4" rx="2" fill="#3d5480"/><rect x="6" y="42" width="32" height="4" rx="2" fill="#4a6396"/></svg>
+        <button>×</button>
+      </div>
+      <div class="dm-thumb">
+        <svg viewBox="0 0 56 56" width="56" height="56"><rect width="56" height="56" fill="#20302a"/><rect x="7" y="10" width="42" height="30" rx="3" fill="#2c4239"/><rect x="12" y="16" width="22" height="4" rx="2" fill="#5fa080"/><rect x="12" y="24" width="32" height="3.5" rx="1.75" fill="#456b58"/></svg>
+        <button>×</button>
+      </div>
+    </div>
+    <div class="dm-row">
+      <button class="dm-btn"><svg viewBox="0 0 24 24" width="13" height="13"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>图片</button>
+      <span class="dm-hint">Enter 保存 · ⇧Enter 换行 · 图片可多选 · 打 #标签 自动创建</span>
+      <span class="dm-spacer"></span>
+      <button class="dm-btn pri">保存</button>
+    </div>
+  </div>
+
+  <div class="dm-filters">
+    <button class="dm-chip on">全部 129</button><button class="dm-chip">待处理 8</button>
+    <button class="dm-chip">已完成 121</button><button class="dm-chip">今天 10</button><button class="dm-chip">置顶</button>
+  </div>
+  <div class="dm-tagbox">
+    <span style="opacity:.7">标签</span>
+    <button class="dm-chip">#需求变更 24</button><button class="dm-chip">#接口 3</button>
+    <button class="dm-chip">#跟进 12</button><button class="dm-chip">#待办 9</button><button class="dm-chip">#客户 6</button>
+    <span class="dm-tagnew">打 #名字 新建</span>
+  </div>
+  <div class="dm-list">
+    <div class="dm-day">今天</div>
+    <div class="dm-card">
+      <button class="dm-cb"></button>
+      <div class="dm-body">
+        <div class="dm-txt">王工刚说接口字段要加 version，老客户端会挂，需要在服务端做兼容</div>
+        <div class="dm-meta"><span class="dm-tag">#需求变更</span><span class="dm-tag">#接口</span><span>刚刚</span></div>
+        <div class="dm-imgs">
+          <svg viewBox="0 0 76 76" width="76" height="76"><rect width="76" height="76" fill="#1f2a3d"/><rect x="8" y="10" width="44" height="7" rx="3.5" fill="#5b7bc4"/><rect x="8" y="23" width="60" height="5" rx="2.5" fill="#3d5480"/><rect x="8" y="33" width="52" height="5" rx="2.5" fill="#3d5480"/><rect x="8" y="43" width="30" height="5" rx="2.5" fill="#3d5480"/></svg>
+          <svg viewBox="0 0 76 76" width="76" height="76"><rect width="76" height="76" fill="#20302a"/><rect x="9" y="13" width="58" height="36" rx="4" fill="#2c4239"/><rect x="15" y="21" width="32" height="5" rx="2.5" fill="#5fa080"/><rect x="15" y="31" width="44" height="4" rx="2" fill="#456b58"/></svg>
+        </div>
+      </div>
+    </div>
+    <div class="dm-card">
+      <button class="dm-cb"></button>
+      <div class="dm-body">
+        <div class="dm-txt">张总说登录页要加「微信扫码」入口，下周三前给一版原型</div>
+        <div class="dm-meta"><span class="dm-tag">#需求变更</span><span class="dm-tag">#登录</span><span>来源：张总</span><span>14:32</span></div>
+      </div>
+    </div>
+    <div class="dm-card">
+      <button class="dm-cb"></button>
+      <div class="dm-body">
+        <div class="dm-txt">周五前把 Q4 排期表发给李工，他那边要提前排人力</div>
+        <div class="dm-meta"><span class="dm-tag">#待办</span><span>来源：Q4 排期讨论</span><span>11:05</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ================= 设置弹层 ================= -->
+<div class="page scene scene-settings" style="display:none">
+  <div class="dm-wrap" style="opacity:.35;pointer-events:none">
+    <div class="dm-head"><h2>备忘录</h2><span class="dm-count">128 条 · 7 条待处理</span><span class="dm-spacer"></span>
+      <span class="dm-sync"><span class="dm-dot"></span>已同步</span>
+      <button class="dm-syncbtn"><svg viewBox="0 0 24 24" width="13" height="13"><path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 3v6h-6"/></svg>立即同步</button>
+      <input placeholder="搜索…" style="width:150px;padding:5px 9px;border-radius:8px;font:inherit;font-size:12px;border:1px solid var(--dsw-alias-border-l1);background:var(--dsw-alias-bg-layer-1);color:inherit">
+      <button class="dm-ib"><svg viewBox="0 0 24 24" width="14" height="14"><path d="M3 6h18M3 12h18M3 18h18"/><circle cx="9" cy="6" r="2.2"/><circle cx="15" cy="12" r="2.2"/><circle cx="8" cy="18" r="2.2"/></svg></button>
+    </div>
+    <div class="dm-compose"><textarea class="dm-ta" placeholder="记点什么…"></textarea></div>
+    <div class="dm-list"></div>
+  </div>
+  <div class="dm-modal" style="position:absolute">
+    <div class="dm-dlg">
+      <h3>GitHub 同步</h3>
+      <div class="sub">同步的是文本层（notes/ 每条一个 .md、attachments/ 图片、log/ 事件日志）；SQLite 只作本地索引，不进仓库。令牌保存在数据目录的 .token（权限 0600），已被 .gitignore 忽略，永远不会提交。</div>
+      <div class="dm-field"><label>仓库</label>
+        <input value="yourname/dsh-memo-data" readonly>
+        <div class="help">私有仓库即可，例：yourname/dsh-memo-data；留空 = 只在本地保存</div>
+      </div>
+      <div class="dm-field"><label>访问令牌（Fine-grained PAT）</label>
+        <input type="password" value="github_pat_xxxxxxxxxxxxxxxx" readonly>
+        <div class="help">权限只需 Contents: Read and write。留空表示不改动已保存的令牌。</div>
+      </div>
+      <div class="dm-dlgfoot">
+        <button class="dm-btn pri">保存并同步</button><span class="dm-spacer"></span>
+        <button class="dm-btn">关闭</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= 搜索 ================= -->
+<div class="page scene scene-search" style="display:none">
+<div class="dm-wrap">
+  <div class="dm-head">
+    <h2>备忘录</h2><span class="dm-count">128 条 · 7 条待处理</span><span class="dm-spacer"></span>
+    <span class="dm-sync"><span class="dm-dot"></span>已同步</span>
+    <button class="dm-syncbtn"><svg viewBox="0 0 24 24" width="13" height="13"><path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 3v6h-6"/></svg>立即同步</button>
+    <input value="扫码  #需求变更" style="width:170px;padding:5px 9px;border-radius:8px;font:inherit;font-size:12px;border:1px solid var(--dsw-alias-brand-primary);background:var(--dsw-alias-bg-layer-1);color:inherit">
+    <button class="dm-ib"><svg viewBox="0 0 24 24" width="14" height="14"><path d="M3 6h18M3 12h18M3 18h18"/><circle cx="9" cy="6" r="2.2"/><circle cx="15" cy="12" r="2.2"/><circle cx="8" cy="18" r="2.2"/></svg></button>
+  </div>
+  <div class="dm-filters">
+    <button class="dm-chip on">全部 3</button><button class="dm-chip">近 7 天</button>
+    <button class="dm-chip">有图片</button><button class="dm-chip">未完成</button>
+  </div>
+  <div class="dm-tagbox"><span style="opacity:.7">标签</span>
+    <button class="dm-chip on">#需求变更 3</button><button class="dm-chip">#登录 1</button>
+    <span class="dm-tagnew">打 #名字 新建</span>
+  </div>
+  <div class="dm-list">
+    <div class="dm-day">找到 3 条 · 用时 6 ms</div>
+    <div class="dm-card">
+      <button class="dm-cb"></button>
+      <div class="dm-body">
+        <div class="dm-txt">张总说登录页要加「微信<span class="dm-hl">扫码</span>」入口，下周三前给一版原型</div>
+        <div class="dm-meta"><span class="dm-tag">#需求变更</span><span>来源：张总</span><span>今天 14:32</span></div>
+        <div class="dm-imgs"><svg viewBox="0 0 76 76" width="76" height="76"><rect width="76" height="76" fill="#1f2a3d"/><rect x="8" y="10" width="44" height="7" rx="3.5" fill="#5b7bc4"/><rect x="8" y="23" width="60" height="5" rx="2.5" fill="#3d5480"/><rect x="8" y="33" width="52" height="5" rx="2.5" fill="#3d5480"/><rect x="8" y="43" width="30" height="5" rx="2.5" fill="#3d5480"/></svg></div>
+      </div>
+    </div>
+    <div class="dm-card">
+      <button class="dm-cb"></button>
+      <div class="dm-body">
+        <div class="dm-txt">微信<span class="dm-hl">扫码</span>的 SDK 申请流程大概 3 个工作日，别卡到最后一天</div>
+        <div class="dm-meta"><span class="dm-tag">#需求变更</span><span>来源：张总</span><span>昨天 17:12</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ================= GIF 帧：记录一条 ================= -->
+<div class="page scene scene-gif" id="gifpage" style="display:none">
+<div class="dm-wrap">
+  <div class="dm-head">
+    <h2>备忘录</h2><span class="dm-count">128 条 · 7 条待处理</span><span class="dm-spacer"></span>
+    <span class="dm-sync"><span class="dm-dot"></span>已同步</span>
+    <button class="dm-syncbtn"><svg viewBox="0 0 24 24" width="13" height="13"><path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 3v6h-6"/></svg>立即同步</button>
+    <input placeholder="搜索…" style="width:150px;padding:5px 9px;border-radius:8px;font:inherit;font-size:12px;border:1px solid var(--dsw-alias-border-l1);background:var(--dsw-alias-bg-layer-1);color:inherit">
+    <button class="dm-ib"><svg viewBox="0 0 24 24" width="14" height="14"><path d="M3 6h18M3 12h18M3 18h18"/><circle cx="9" cy="6" r="2.2"/><circle cx="15" cy="12" r="2.2"/><circle cx="8" cy="18" r="2.2"/></svg></button>
+  </div>
+
+  <div class="dm-compose" id="gcompose">
+    <textarea class="dm-ta" id="gta" placeholder="记点什么…  例：张总要登录页加微信扫码，下周三前给原型 #需求变更"></textarea>
+    <div class="dm-thumbs" id="gthumb" style="display:none">
+      <div class="dm-thumb">
+        <svg viewBox="0 0 56 56" width="56" height="56"><rect width="56" height="56" fill="#1f2a3d"/><rect x="6" y="8" width="34" height="6" rx="3" fill="#5b7bc4"/><rect x="6" y="18" width="44" height="4" rx="2" fill="#3d5480"/><rect x="6" y="26" width="38" height="4" rx="2" fill="#3d5480"/><rect x="6" y="34" width="24" height="4" rx="2" fill="#3d5480"/></svg>
+      </div>
+    </div>
+    <div class="dm-row">
+      <button class="dm-btn"><svg viewBox="0 0 24 24" width="13" height="13"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>图片</button>
+      <span class="dm-hint">Enter 保存 · ⇧Enter 换行 · 图片可多选 · 打 #标签 自动创建</span>
+      <span class="dm-spacer"></span>
+      <button class="dm-btn pri" id="gsave">保存</button>
+    </div>
+  </div>
+
+  <div class="dm-filters">
+    <button class="dm-chip on">全部 <span id="gcount">128</span></button><button class="dm-chip">待处理 <span id="gtodo">7</span></button>
+    <button class="dm-chip">已完成 121</button><button class="dm-chip">今天</button><button class="dm-chip">置顶</button>
+  </div>
+  <div class="dm-tagbox"><span style="opacity:.7">标签</span>
+    <button class="dm-chip">#需求变更 <span id="gtag">23</span></button><button class="dm-chip">#接口</button>
+    <button class="dm-chip">#跟进 12</button><button class="dm-chip">#待办 9</button>
+    <span class="dm-tagnew">打 #名字 新建</span>
+  </div>
+  <div class="dm-list" id="glist">
+    <div class="dm-day">今天</div>
+    <div class="dm-card">
+      <button class="dm-cb"></button>
+      <div class="dm-body">
+        <div class="dm-txt">张总说登录页要加「微信扫码」入口，下周三前给一版原型</div>
+        <div class="dm-meta"><span class="dm-tag">#需求变更</span><span class="dm-tag">#登录</span><span>来源：张总</span><span>14:32</span></div>
+      </div>
+    </div>
+    <div class="dm-card">
+      <button class="dm-cb"></button>
+      <div class="dm-body">
+        <div class="dm-txt">周五前把 Q4 排期表发给李工，他那边要提前排人力</div>
+        <div class="dm-meta"><span class="dm-tag">#待办</span><span>来源：Q4 排期讨论</span><span>11:05</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dm-toast ok" id="gtoast" style="display:none">
+    <svg viewBox="0 0 24 24" width="15" height="15"><path d="M20 6L9 17l-5-5"/></svg>
+    <span>已同步到 GitHub</span>
+  </div>
+</div>
+</div>
+
+<script>
+// 场景切换：#panel / #compose / #settings / #search，或 #f1..#f4（GIF 帧）
+function applyHash(){
+  var h = (location.hash || '#panel').slice(1);
+  var isFrame = /^f\d$/.test(h);
+  var scene = isFrame ? 'gif' : h;
+  document.querySelectorAll('.page').forEach(function(p){
+    p.style.display = p.classList.contains('scene-' + scene) ? 'flex' : 'none';
+  });
+  if (isFrame) renderFrame(parseInt(h.slice(1), 10));
+}
+// GIF 各帧的状态
+function renderFrame(n){
+  var ta=document.getElementById('gta'), thumb=document.getElementById('gthumb'),
+      list=document.getElementById('glist'), toast=document.getElementById('gtoast'),
+      compose=document.getElementById('gcompose'), count=document.getElementById('gcount'),
+      todo=document.getElementById('gtodo'), tag=document.getElementById('gtag');
+  var text='王工刚说接口字段要加 version，老客户端会挂，需要在服务端做兼容 #需求变更 #接口';
+  var newCard='<div class="dm-card" id="gnew"><button class="dm-cb"></button><div class="dm-body">'
+    +'<div class="dm-txt">王工刚说接口字段要加 version，老客户端会挂，需要在服务端做兼容</div>'
+    +'<div class="dm-meta"><span class="dm-tag">#需求变更</span><span class="dm-tag">#接口</span><span>刚刚</span></div>'
+    +(n>=3?'<div class="dm-imgs"><svg viewBox="0 0 76 76" width="76" height="76"><rect width="76" height="76" fill="#1f2a3d"/><rect x="8" y="10" width="44" height="7" rx="3.5" fill="#5b7bc4"/><rect x="8" y="23" width="60" height="5" rx="2.5" fill="#3d5480"/><rect x="8" y="33" width="52" height="5" rx="2.5" fill="#3d5480"/><rect x="8" y="43" width="30" height="5" rx="2.5" fill="#3d5480"/></svg></div>':'')
+    +'</div></div>';
+  var firstCard=list.querySelector('.dm-card');
+  var old=list.querySelector('#gnew');
+  if(old) old.remove();
+  if(n===1){ ta.value=''; thumb.style.display='none'; toast.style.display='none';
+    compose.style.borderColor='var(--dsw-alias-border-l1)'; compose.style.boxShadow='none';
+    count.textContent='128'; todo.textContent='7'; tag.textContent='23'; }
+  if(n===2){ ta.value=text.slice(0,18); thumb.style.display='none'; toast.style.display='none';
+    compose.style.borderColor='var(--dsw-alias-brand-primary)';
+    compose.style.boxShadow='0 0 0 3px color-mix(in srgb, var(--dsw-alias-brand-primary) 14%, transparent)';
+    count.textContent='128'; todo.textContent='7'; tag.textContent='23'; }
+  if(n===3){ ta.value=text; thumb.style.display='flex';
+    compose.style.borderColor='var(--dsw-alias-brand-primary)';
+    compose.style.boxShadow='0 0 0 3px color-mix(in srgb, var(--dsw-alias-brand-primary) 14%, transparent)';
+    count.textContent='128'; todo.textContent='7'; tag.textContent='23'; }
+  if(n===4){ ta.value=''; thumb.style.display='none'; toast.style.display='flex';
+    compose.style.borderColor='var(--dsw-alias-border-l1)'; compose.style.boxShadow='none';
+    count.textContent='129'; todo.textContent='8'; tag.textContent='24';
+    list.insertBefore(document.createRange().createContextualFragment(newCard), firstCard); }
+}
+// 给 GIF 帧用的“打字中”效果由多帧生成，这里只需静态状态
+window.addEventListener('hashchange', applyHash);
+applyHash();
+// 允许指定帧
+(function(){ var m=/frame=(\d)/.exec(location.search); if(m) renderFrame(parseInt(m[1],10)); })();
+</script>
+</body>
+</html>
