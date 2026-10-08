@@ -1,277 +1,277 @@
 # dsh-memo
 
-[English](README.en.md) | **中文**
+[中文](README.zh-CN.md) | **English**
 
-**DeepSeek Harness 的备忘录插件** —— 侧边栏入口 + 快速记录，本地 SQLite 存储，同步到 GitHub 私有仓库，支持图片与截图。
+**A memo/scratchpad plugin for DeepSeek Harness** — sidebar entry with quick capture, local SQLite storage, sync to a private GitHub repository, and image/screenshot support.
 
-> 为「聊天里突然冒出来的需求变更和临时待办」而做：**几秒记下来、事后找得回来、有上下文、不丢**。
+> Built for the moment a requirement changes mid-conversation: **capture it in seconds, find it later, keep the context, never lose it.**
 
 ---
 
-## 特性
+## Features
 
 | | |
 |---|---|
-| **侧边栏入口** | 底部入口图标（与「设置」并列），带未处理角标，点击切换到备忘录面板 |
-| **快速记录** | 面板顶部常驻输入框，`Enter` 即存；输入框可拖拽调整高度 |
-| **图片与截图** | `⌘V` 粘贴 / 拖拽 / 文件选择（可多选）；按内容哈希去重，同一张图只存一份 |
-| **标签** | 正文里打 `#任意名字` 保存即自动创建，不是固定白名单 |
-| **检索** | 中文子串搜索 + `#标签` / `来源:` / `after:` / `before:` / `has:图片` / `is:未完成` 限定词 |
-| **本地存储** | `node:sqlite`（Node 内置），**零外部依赖**，无原生模块编译 |
-| **GitHub 同步** | 文本层自动推送到私有仓库（变更后 30 秒防抖），含每日 SQLite 紧凑快照 |
-| **零构建** | 客户端半侧是手写的模块 bundle，用 `React.createElement`，改完刷新即生效 |
+| **Sidebar entry** | Bottom-rail icon next to Settings, with an open-items badge; click to switch to the memo panel |
+| **Quick capture** | Always-present input at the top of the panel; `Enter` saves; the box is drag-resizable |
+| **Images & screenshots** | `⌘V` paste / drag-and-drop / file picker (multi-select); content-hash deduplicated, one copy per image |
+| **Tags** | Type `#anything` in the body and it is created automatically — not a fixed whitelist |
+| **Search** | CJK-safe substring search plus `#tag` / `source:` / `after:` / `before:` / `has:image` / `is:open` qualifiers |
+| **Local storage** | `node:sqlite` (built into Node) — **zero external dependencies**, no native module compilation |
+| **GitHub sync** | Auto-pushes the text layer to a private repo (30s debounce), plus daily compact SQLite snapshots |
+| **No build step** | The client half is a hand-written module bundle using `React.createElement` — edit and refresh |
 
 ---
 
-## 安装
+## Installation
 
-### 前置要求
+### Requirements
 
-- DeepSeek Harness（dsh）**0.2.0-rc.2 或更高**
-- 其内置 Node **≥ 22.5**（`node:sqlite` 的最低版本；dsh 的 Electron 通常自带 24.x）
-- 无第三方运行时依赖，不需要 `npm install`
+- DeepSeek Harness (dsh) **0.2.0-rc.2 or newer**
+- Its bundled Node **≥ 22.5** (the minimum for `node:sqlite`; dsh's Electron usually ships 24.x)
+- No third-party runtime dependencies, no `npm install` needed
 
-### 方式一：从 GitHub 安装
+### Option 1: Install from GitHub
 
 ```sh
-dsh plugin --profile <你的 profile> add github:adamcjm/dsh-memo
+dsh plugin --profile <your-profile> add github:adamcjm/dsh-memo
 ```
 
-`<你的 profile>` 是你的 dsh profile 名（如 `web`、`tui`）。安装后**重启 dsh** 生效。
+`<your-profile>` is your dsh profile name (e.g. `web`, `tui`). **Restart dsh** afterwards.
 
-### 方式二：本地开发安装
+### Option 2: Install for local development
 
 ```sh
 git clone https://github.com/adamcjm/dsh-memo.git
-dsh plugin --profile <你的 profile> add link:/path/to/dsh-memo
+dsh plugin --profile <your-profile> add link:/path/to/dsh-memo
 ```
 
-`link:` 方式下改动即时可见（客户端改动刷新页面，宿主端改动需重启）。
+With `link:` your edits are live (refresh the page for client changes; restart for host changes).
 
-### 方式三：手动接入（desktop profile 专用）
+### Option 3: Manual wiring (desktop profile only)
 
-**`desktop` profile 由 dsh 桌面应用独占管理，CLI 会拒绝写入**（报 `profile "desktop" is managed exclusively by the Electron application`）。这类 profile 需要手动接入：
+**The `desktop` profile is owned exclusively by the dsh desktop app and the CLI refuses to write to it** (it reports `profile "desktop" is managed exclusively by the Electron application`). Wire it manually:
 
-1. 编辑 `~/.dsh/profiles/desktop/package.json`：
+1. Edit `~/.dsh/profiles/desktop/package.json`:
 
    ```jsonc
    {
      "dsh": {
        "profile": {
          "bundles": [
-           // ... 已有的 bundle ...
-           "dsh-memo"                                // ← 追加
+           // ... existing bundles ...
+           "dsh-memo"                                // ← add
          ]
        }
      },
      "dependencies": {
        // ...
-       "dsh-memo": "link:/绝对路径/到/dsh-memo"      // ← 追加
+       "dsh-memo": "link:/absolute/path/to/dsh-memo" // ← add
      }
    }
    ```
 
-2. 安装依赖（建立符号链接）：
+2. Install dependencies (creates the symlink):
 
    ```sh
    cd ~/.dsh/profiles/desktop
    pnpm install
    ```
 
-3. **重启 DeepSeek Harness**。
+3. **Restart DeepSeek Harness.**
 
-### 验证是否装上
+### Verifying the install
 
 ```sh
 dsh --profile <profile> --dump-config | grep -A3 "id: memo"
 ```
 
-或直接看界面：侧边栏底部应出现「备忘录」图标。
+Or just look at the UI: a **Memo** icon should appear at the bottom of the sidebar.
 
 ---
 
-## 使用
+## Usage
 
-### 记一条
+### Capturing a note
 
-打开侧边栏底部的 **备忘录** 图标，在顶部输入框写下内容，按 `Enter` 保存：
+Open the **Memo** icon at the bottom of the sidebar and type into the input at the top, then press `Enter`:
 
 ```
-张总说登录页要加微信扫码入口，下周三前给原型 #需求变更 #登录
+Mr. Zhang wants a WeChat QR login entry on the login page; prototype due next Wednesday #requirement-change #login
 ```
 
-保存后 `#需求变更`、`#登录` 会自动成为标签，正文里的标签记号会被清理掉。
+`#requirement-change` and `#login` become tags automatically, and the tag markers are stripped from the body.
 
-### 加图片 / 截图
+### Adding images / screenshots
 
-三种方式，可混用、可多次追加：
+Three ways, freely mixable and repeatable:
 
-- **粘贴**：截图后在输入框里按 `⌘V`
-- **拖拽**：从 Finder 直接拖图片到输入框
-- **选择**：点「图片」按钮，文件选择器里按住 `⌘` / `⇧` 可多选
+- **Paste** — take a screenshot, then press `⌘V` in the input
+- **Drag** — drag images straight from Finder onto the input
+- **Pick** — click the "Image" button; hold `⌘` / `⇧` in the file dialog for multi-select
 
-图片按 SHA-256 命名存入 `attachments/`，**同一张图贴两次只占一份空间**。点击缩略图可放大查看。
+Images are named by SHA-256 and stored in `attachments/`, so **pasting the same image twice costs one copy**. Click a thumbnail to view it full size.
 
-### 标签
+### Tags
 
-标签**不是固定的**。默认的 `#需求变更` `#待办` `#跟进` `#灵感` `#会议` 只是起步建议：
+Tags are **not fixed**. The defaults (`#requirement-change` `#todo` `#follow-up` `#idea` `#meeting`) are just starting suggestions:
 
-- 正文里打 `#客户A`、`#张总` 保存 → 自动创建该标签并挂到这条备忘上
-- 标签区按使用次数排序，点击即筛选
-- 某个标签再没有任何备忘在用时会自动隐藏
+- Type `#customer-A` or `#MrZhang` in the body and save → the tag is created and attached to that note
+- The tag area is sorted by usage; click one to filter
+- A tag that no note uses anymore disappears on its own
 
-### 搜索
+### Search
 
-面板右上角搜索框，`Enter` 执行。支持组合限定词：
+Use the search box in the panel header and press `Enter`. Qualifiers combine:
 
-| 写法 | 含义 |
+| Syntax | Meaning |
 |---|---|
-| `扫码` | 正文或来源包含该串（中文两字也能命中） |
-| `#需求变更` | 按标签 |
-| `来源:张总` | 按出处 |
-| `after:2026-10-01` `before:2026-10-08` | 按时间范围 |
-| `has:图片` | 只看带附件的 |
-| `is:未完成` `is:已完成` | 只看待处理 / 已完成 |
+| `scan` | Body or source contains the string (works for short CJK queries too) |
+| `#requirement-change` | By tag |
+| `source:MrZhang` | By origin |
+| `after:2026-10-01` `before:2026-10-08` | By date range |
+| `has:image` | Only notes with attachments |
+| `is:open` `is:done` | Only open / only completed |
 
-### 快捷键
+### Keyboard shortcuts
 
-| 按键 | 作用 |
+| Key | Action |
 |---|---|
-| `Enter` | 保存当前输入 |
-| `⇧Enter` | 输入框内换行 |
-| `⌘V` | 粘贴剪贴板里的图片 |
-| `Esc` | 关闭弹层（设置 / 图片放大） |
+| `Enter` | Save the current input |
+| `⇧Enter` | Newline inside the input |
+| `⌘V` | Paste an image from the clipboard |
+| `Esc` | Close an overlay (settings / image zoom) |
 
-### 同步到 GitHub
+### Syncing to GitHub
 
-1. 在 GitHub 建一个**私有仓库**（例如 `yourname/dsh-memo-data`）
-2. 生成访问令牌：
-   - 推荐 **Fine-grained PAT**，只授权该仓库的 **Contents: Read and write**
-   - 或经典 PAT，勾选 `repo`
-3. 在插件面板右上角点 **设置图标**，填入仓库名与令牌，点「保存并同步」
+1. Create a **private repository** on GitHub (e.g. `yourname/dsh-memo-data`)
+2. Create an access token:
+   - Preferred: a **fine-grained PAT** scoped to that repo with **Contents: Read and write**
+   - Or a classic PAT with the `repo` scope
+3. Click the **settings icon** in the panel header, fill in the repository and token, and hit "Save and sync"
 
-之后：
+After that:
 
-- **手动同步**：点「立即同步」按钮，结果以顶部通知告知（成功 / 失败）
-- **自动同步**：任何改动后 30 秒自动提交并推送；自动同步失败也会弹通知
-- **状态显示**：面板头部显示「已同步 / 待同步 / 仅本地 / 同步异常」
+- **Manual sync** — click "Sync now"; the result is reported by a top-center notification (success / failure)
+- **Auto sync** — every change is committed and pushed 30 seconds later; failures also raise a notification
+- **Status** — the panel header shows "Synced / Pending / Local only / Sync error"
 
-令牌存储优先级（都不会进入仓库）：
+Token lookup order (none of them ever enter the repository):
 
-1. 设置界面写入 `~/.dsh/memo/.token`（权限 `0600`）
-2. 环境变量 `DSH_MEMO_GITHUB_TOKEN`
-3. 环境变量 `GITHUB_TOKEN`
+1. The settings dialog writes `~/.dsh/memo/.token` (mode `0600`)
+2. Environment variable `DSH_MEMO_GITHUB_TOKEN`
+3. Environment variable `GITHUB_TOKEN`
 
-推送时令牌只出现在 git 进程参数（`http.extraheader`）里，**不写进 `.git/config`**。
+When pushing, the token only ever appears in the git process arguments (`http.extraheader`) — it is **never written into `.git/config`**.
 
 ---
 
-## 数据与备份
+## Data & backup
 
-数据根目录 `~/.dsh/memo/`，本身是一个 git 仓库：
+The data root is `~/.dsh/memo/`, which is itself a git repository:
 
 ```
 ~/.dsh/memo/
-├── memo.db                  # SQLite 工作库（读写引擎，git 忽略，可从 notes/ 重建）
-├── notes/2026-10/<id>.md    # ★ 文本事实源：每条备忘一个文件
-├── attachments/<前2位>/<sha256>.<ext>   # 图片，内容哈希命名
-├── log/2026-10.jsonl        # 追加式操作日志（.gitattributes 配了 merge=union）
-├── snapshots/memo-YYYY-MM-DD.sqlite     # 每日紧凑快照，保留最近 7 份
-├── .token                   # 凭据（0600，git 忽略）
+├── memo.db                  # SQLite working DB (engine; git-ignored, rebuildable from notes/)
+├── notes/2026-10/<id>.md    # ★ the text source of truth: one file per note
+├── attachments/<xx>/<sha256>.<ext>      # images, content-hash named
+├── log/2026-10.jsonl        # append-only action log (.gitattributes sets merge=union)
+├── snapshots/memo-YYYY-MM-DD.sqlite     # daily compact snapshot, 7 kept
+├── .token                   # credentials (0600, git-ignored)
 ├── .gitignore
 └── .gitattributes
 ```
 
-### 为什么 SQLite 不直接进 git
+### Why the SQLite file is not committed directly
 
-SQLite 在 git 里是一个**不可 merge 的二进制**：两台设备各改一次，git 只能整库二选一 —— 丢的是一台设备的**全部**记录，而不是一条；而且每改一条都会重写数据库页，一次小编辑就是一个完整新 blob，仓库会快速膨胀。
+A SQLite file in git is an **unmergeable binary**: if two machines both edit it, git can only pick one entire file — you lose **everything** from the other machine, not just one note. It also rewrites whole database pages on every change, so a single small edit becomes a complete new blob and the repository balloons.
 
-所以分成三层：
+Hence three layers:
 
-| 层 | 角色 | 失效后果 |
+| Layer | Role | If it breaks |
 |---|---|---|
-| ① 本地 SQLite | 读写引擎、索引 | 删掉即可从 ② 重建 |
-| ② `notes/` + `attachments/` + `log/` | **同步真相**，git 同步的就是它 | 有 ③ 兜底 |
-| ③ GitHub 私有仓库 | 备份 + 版本 | —— |
+| ① Local SQLite | Query engine and index | Delete it; it rebuilds from ② |
+| ② `notes/` + `attachments/` + `log/` | **Sync source of truth** — this is what git moves | ③ is the backstop |
+| ③ Private GitHub repo | Backup and history | — |
 
-`snapshots/` 里每日的 `.sqlite` 也一并提交，满足「SQLite 文件也在 GitHub」；但它只作灾备、不参与合并。
+The daily `.sqlite` files under `snapshots/` are committed too, satisfying "the SQLite file lives on GitHub as well" — but they are disaster recovery only and never participate in merges.
 
-### SQLite 丢失了怎么办
+### What if the SQLite file is lost
 
-删掉 `memo.db*` 后重启 dsh（或调用 `rebuild` 接口），插件会扫描 `notes/**/*.md` 全量重建，包括标签、来源、截止日期与附件引用。
+Delete `memo.db*` and restart dsh (or call the `rebuild` API). The plugin scans `notes/**/*.md` and rebuilds everything, including tags, sources, due dates and attachment references.
 
 ---
 
-## 卸载
+## Uninstalling
 
-### 通过 CLI 安装的
+### If installed via the CLI
 
 ```sh
-dsh plugin --profile <你的 profile> remove dsh-memo
+dsh plugin --profile <your-profile> remove dsh-memo
 ```
 
-### 手动接入的（desktop profile）
+### If wired manually (desktop profile)
 
-1. 编辑 `~/.dsh/profiles/desktop/package.json`，从 `dsh.profile.bundles` 与 `dependencies` 中删除 `dsh-memo` 两项
+1. Edit `~/.dsh/profiles/desktop/package.json` and remove the two `dsh-memo` entries from `dsh.profile.bundles` and `dependencies`
 2. `cd ~/.dsh/profiles/desktop && pnpm install`
-3. 重启 DeepSeek Harness
+3. Restart DeepSeek Harness
 
-### 可选：删除数据
+### Optional: delete your data
 
-卸载插件**不会**删除你的数据。确认不再需要时：
+Uninstalling the plugin **does not** delete your data. If you are sure:
 
 ```sh
-rm -rf ~/.dsh/memo          # 本地数据（含凭据）
+rm -rf ~/.dsh/memo          # local data (including credentials)
 ```
 
-如果同步过 GitHub，远端仓库（如 `yourname/dsh-memo-data`）需要你自行删除。
+If you synced to GitHub, the remote repository (e.g. `yourname/dsh-memo-data`) is yours to delete.
 
 ---
 
-## 开发
+## Development
 
 ```sh
 git clone https://github.com/adamcjm/dsh-memo.git
 cd dsh-memo
 
-node test/smoke.mjs              # 宿主半侧 64 项：CRUD / 标签 / 附件 / 重建 / 快照 / 凭据
-node test/client-precheck.mjs    # 客户端 22 项：模块协议 / slot 注册 / 组件渲染
-node test/ui-feedback-check.mjs  # 界面细节 22 项
+node test/smoke.mjs              # host half, 64 checks: CRUD / tags / attachments / rebuild / snapshots / credentials
+node test/client-precheck.mjs    # client half, 22 checks: module protocol / slot registration / component rendering
+node test/ui-feedback-check.mjs  # UI details, 22 checks
 ```
 
-三个测试都**不需要启动 dsh**，直接跑。客户端测试需要能解析 `react` / `react-dom`（先从项目自身找，找不到则从 dsh profile 借）。
+None of the three need dsh running. The client tests need to resolve `react` / `react-dom` (they look in the project first, then borrow from a dsh profile).
 
-### 结构
+### Layout
 
 ```
-package.json        dsh.bundle.patch + dsh.client（platform: web）
-cordis.patch.yml    宿主插件行：id: memo
-lib/index.js        宿主半侧：SQLite / 附件 / Markdown 事实源 / git 同步 / HTTP API
-lib/client.js       客户端半侧：window.__ModuleLoader__.load({id, factory}) + React UI
-test/               三个可独立运行的测试
+package.json        dsh.bundle.patch + dsh.client (platform: web)
+cordis.patch.yml    host plugin row: id: memo
+lib/index.js        host half: SQLite / attachments / Markdown source of truth / git sync / HTTP API
+lib/client.js       client half: window.__ModuleLoader__.load({id, factory}) + React UI
+test/               three independently runnable test files
 ```
 
-### 扩展点
+### Extension points
 
-- **客户端 → 宿主**：`fetch('/memo/api/<method>')`；宿主用 `ctx.webServer.register({ kind: 'prefix' })` 提供
-- **侧边栏图标**：`ctx.slots.register({ name: 'sidebar.panellist', id, order, label }, Icon)`，图标组件收到 `{ size, active }`
-- **主面板**：`ctx.slots.register({ name: 'main', key: id }, Panel)` —— **两者 id 必须相同**，点击图标时由外壳调用 `ctx.layout.selectPanel(id)`
+- **Client → host**: `fetch('/memo/api/<method>')`; the host serves it via `ctx.webServer.register({ kind: 'prefix' })`
+- **Sidebar icon**: `ctx.slots.register({ name: 'sidebar.panellist', id, order, label }, Icon)` — the icon component receives `{ size, active }`
+- **Main panel**: `ctx.slots.register({ name: 'main', key: id }, Panel)` — **both ids must match**; the shell calls `ctx.layout.selectPanel(id)` when the icon is clicked
 
-### 改动如何生效
+### How changes take effect
 
-- **客户端（`lib/client.js`）**：刷新页面即可（模块系统按 mtime / ctime / size 派生 revision，支持热替换）
-- **宿主端（`lib/index.js`）**：必须**重启 dsh**（进程启动时才加载）
+- **Client (`lib/client.js`)**: refresh the page (the module system derives revisions from mtime / ctime / size and hot-swaps)
+- **Host (`lib/index.js`)**: **restart dsh** (host code loads at process start)
 
 ---
 
-## 已知限制
+## Known limitations
 
-- 只做文本层同步，**不做多设备并发合并 UI**（单设备前提下不会发生；文本层天然可 merge 作为保险）
-- 无手机端界面
-- 检索用 `LIKE` 而不是 FTS5 —— SQLite 的 `trigram` 分词器要求查询词 ≥3 字符，而中文最常用的两字检索（"扫码"）会静默返回空结果，正确性优先
-- 图片按原图传输，不生成缩略图
-- 不做系统级提醒（只有截止日期字段与到期展示）
+- Text-layer sync only — **no multi-device merge UI** (it cannot happen on a single machine; the text layer being mergeable is the insurance)
+- No mobile UI
+- Search uses `LIKE`, not FTS5 — SQLite's `trigram` tokenizer requires query terms of 3+ characters, and the most common Chinese queries are two characters ("扫码", "登录"), which would silently return nothing. Correctness first
+- Images are transferred at original size; no thumbnails
+- No system-level reminders (only a due-date field and due highlighting)
 
-## 许可
+## License
 
 [MIT](LICENSE)

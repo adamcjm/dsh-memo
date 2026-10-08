@@ -1,7 +1,7 @@
 {
   "name": "dsh-memo",
   "version": "0.1.0",
-  "description": "DeepSeek Harness 备忘录插件：侧边栏入口 + 快速记录，本地 SQLite 存储，GitHub 私有仓库同步，支持图片与截图。",
+  "description": "Memo plugin for DeepSeek Harness: sidebar quick capture, local SQLite storage, private GitHub repo sync, and image/screenshot support.",
   "author": "adamcjm",
   "license": "MIT",
   "type": "module",
@@ -16,7 +16,7 @@
     "lib",
     "cordis.patch.yml",
     "README.md",
-    "README.en.md",
+    "README.zh-CN.md",
     "LICENSE"
   ],
   "keywords": [
