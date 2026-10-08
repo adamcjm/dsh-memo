@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8">
-<title>dsh-memo 演示</title>
+<title>dsh-memo demo</title>
 <style>
 /* ── DSH 主题 token（深色） ── */
 :root{
@@ -97,7 +97,7 @@ input,textarea{font:inherit;color:inherit;background:none;border:none;outline:no
 .dm-field .help{font-size:11px;color:var(--dsw-alias-label-secondary);margin-top:4px;line-height:1.5;opacity:.85}
 .dm-dlgfoot{display:flex;align-items:center;gap:8px;margin-top:16px}
 
-/* ── 演示页排版 ── */
+/* ── demo页排版 ── */
 .page{position:relative;width:960px;height:660px;overflow:hidden;background:var(--dsw-alias-bg-base);display:flex;flex-direction:column}
 .dm-wrap{flex:1;min-height:0}
 .page{display:none}
@@ -110,15 +110,15 @@ input,textarea{font:inherit;color:inherit;background:none;border:none;outline:no
 <div class="dm-wrap">
 
   <div class="dm-head">
-    <h2>备忘录</h2>
-    <span class="dm-count">128 条 · 7 条待处理</span>
+    <h2>Memo</h2>
+    <span class="dm-count">128 notes · 7 open</span>
     <span class="dm-spacer"></span>
-    <span class="dm-sync"><span class="dm-dot"></span>已同步</span>
+    <span class="dm-sync"><span class="dm-dot"></span>Synced</span>
     <button class="dm-syncbtn">
       <svg viewBox="0 0 24 24" width="13" height="13"><path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 3v6h-6"/></svg>
-      立即同步
+      Sync now
     </button>
-    <input value="" placeholder="搜索…" style="width:150px;padding:5px 9px;border-radius:8px;font:inherit;font-size:12px;border:1px solid var(--dsw-alias-border-l1);background:var(--dsw-alias-bg-layer-1);color:inherit">
+    <input value="" placeholder="Search…" style="width:150px;padding:5px 9px;border-radius:8px;font:inherit;font-size:12px;border:1px solid var(--dsw-alias-border-l1);background:var(--dsw-alias-bg-layer-1);color:inherit">
     <button class="dm-ib">
       <svg viewBox="0 0 24 24" width="14" height="14"><path d="M3 6h18M3 12h18M3 18h18"/><circle cx="9" cy="6" r="2.2"/><circle cx="15" cy="12" r="2.2"/><circle cx="8" cy="18" r="2.2"/></svg>
     </button>
@@ -126,46 +126,46 @@ input,textarea{font:inherit;color:inherit;background:none;border:none;outline:no
 
   <!-- 快速记录：空态（主面板场景） -->
   <div class="dm-compose">
-    <textarea class="dm-ta" placeholder="记点什么…  例：张总要登录页加微信扫码，下周三前给原型 #需求变更"></textarea>
+    <textarea class="dm-ta" placeholder="Note something…  e.g. WeChat QR login on the login page, prototype due Wednesday #requirement"></textarea>
     <div class="dm-row">
       <button class="dm-btn">
         <svg viewBox="0 0 24 24" width="13" height="13"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
-        图片
+        Image
       </button>
-      <span class="dm-hint">Enter 保存 · ⇧Enter 换行 · 图片可多选 · 打 #标签 自动创建</span>
+      <span class="dm-hint">Enter to save · ⇧Enter for newline · multi-select · type #tag to create</span>
       <span class="dm-spacer"></span>
-      <button class="dm-btn pri">保存</button>
+      <button class="dm-btn pri">Save</button>
     </div>
   </div>
 
   <div class="dm-filters">
-    <button class="dm-chip on">全部 128</button>
-    <button class="dm-chip">待处理 7</button>
-    <button class="dm-chip">已完成 121</button>
-    <button class="dm-chip">今天 9</button>
-    <button class="dm-chip">置顶</button>
+    <button class="dm-chip on">All 128</button>
+    <button class="dm-chip">Open 7</button>
+    <button class="dm-chip">Done 121</button>
+    <button class="dm-chip">Today 9</button>
+    <button class="dm-chip">Pinned</button>
   </div>
 
   <div class="dm-tagbox">
-    <span style="opacity:.7">标签</span>
-    <button class="dm-chip">#需求变更 23</button>
-    <button class="dm-chip">#跟进 12</button>
-    <button class="dm-chip">#待办 9</button>
-    <button class="dm-chip">#客户 6</button>
-    <button class="dm-chip">#灵感 4</button>
-    <span class="dm-tagnew">打 #名字 新建</span>
+    <span style="opacity:.7">Tags</span>
+    <button class="dm-chip">#requirement 23</button>
+    <button class="dm-chip">#follow-up 12</button>
+    <button class="dm-chip">#todo 9</button>
+    <button class="dm-chip">#customer 6</button>
+    <button class="dm-chip">#idea 4</button>
+    <span class="dm-tagnew">type #name to create</span>
   </div>
 
   <div class="dm-list">
-    <div class="dm-day">今天</div>
+    <div class="dm-day">Today</div>
 
     <div class="dm-card">
       <button class="dm-cb"></button>
       <div class="dm-body">
-        <div class="dm-txt">张总说登录页要加「微信扫码」入口，下周三前给一版原型</div>
+        <div class="dm-txt">Zhang wants a WeChat QR login entry on the login page; prototype due next Wednesday</div>
         <div class="dm-meta">
-          <span class="dm-tag">#需求变更</span><span class="dm-tag">#登录</span>
-          <span>来源：张总</span><span>14:32</span>
+          <span class="dm-tag">#requirement</span><span class="dm-tag">#login</span>
+          <span>Source: Zhang</span><span>14:32</span>
         </div>
         <div class="dm-imgs">
           <svg viewBox="0 0 76 76" width="76" height="76"><rect width="76" height="76" fill="#1f2a3d"/><rect x="8" y="10" width="44" height="7" rx="3.5" fill="#5b7bc4"/><rect x="8" y="23" width="60" height="5" rx="2.5" fill="#3d5480"/><rect x="8" y="33" width="52" height="5" rx="2.5" fill="#3d5480"/><rect x="8" y="43" width="30" height="5" rx="2.5" fill="#3d5480"/><rect x="8" y="55" width="42" height="5" rx="2.5" fill="#4a6396"/></svg>
@@ -176,23 +176,23 @@ input,textarea{font:inherit;color:inherit;background:none;border:none;outline:no
     <div class="dm-card">
       <button class="dm-cb"></button>
       <div class="dm-body">
-        <div class="dm-txt">周五前把 Q4 排期表发给李工，他那边要提前排人力</div>
+        <div class="dm-txt">Send the Q4 schedule to Li by Friday — he needs to allocate people early</div>
         <div class="dm-meta">
-          <span class="dm-tag">#待办</span>
-          <span>来源：Q4 排期讨论</span><span>11:05</span>
+          <span class="dm-tag">#todo</span>
+          <span>Source: Q4 planning thread</span><span>11:05</span>
         </div>
       </div>
     </div>
 
-    <div class="dm-day">昨天</div>
+    <div class="dm-day">Yesterday</div>
 
     <div class="dm-card">
       <button class="dm-cb"></button>
       <div class="dm-body">
-        <div class="dm-txt">客户反馈导出报表缺少「负责人」字段，等产品确认口径后回复</div>
+        <div class="dm-txt">Customer says the exported report lacks an Owner column; reply once PM confirms the definition</div>
         <div class="dm-meta">
-          <span class="dm-tag">#跟进</span><span class="dm-tag">#客户</span>
-          <span>来源：客户群</span><span>昨天 18:20</span>
+          <span class="dm-tag">#follow-up</span><span class="dm-tag">#customer</span>
+          <span>Source: Customer group</span><span>Yesterday 18:20</span>
         </div>
         <div class="dm-imgs">
           <svg viewBox="0 0 76 76" width="76" height="76"><rect width="76" height="76" fill="#2a2135"/><rect x="7" y="9" width="62" height="44" rx="4" fill="#3d2f4d"/><rect x="13" y="16" width="26" height="5" rx="2.5" fill="#8b6fb0"/><rect x="13" y="27" width="48" height="4" rx="2" fill="#6a5580"/><rect x="13" y="36" width="40" height="4" rx="2" fill="#6a5580"/></svg>
@@ -204,8 +204,8 @@ input,textarea{font:inherit;color:inherit;background:none;border:none;outline:no
     <div class="dm-card done">
       <button class="dm-cb"><svg viewBox="0 0 24 24" style="width:11px;height:11px"><path d="M20 6L9 17l-5-5"/></svg></button>
       <div class="dm-body">
-        <div class="dm-txt">确认下周一评审会议时间改到 10:00</div>
-        <div class="dm-meta"><span>昨天 09:41</span></div>
+        <div class="dm-txt">Confirm: next Monday review moved to 10:00</div>
+        <div class="dm-meta"><span>Yesterday 09:41</span></div>
       </div>
     </div>
   </div>
@@ -213,19 +213,19 @@ input,textarea{font:inherit;color:inherit;background:none;border:none;outline:no
 </div>
 </div>
 
-<!-- ================= 记录中（含图片） ================= -->
+<!-- ================= 记录中（含Image） ================= -->
 <div class="page scene scene-compose" style="display:none">
 <div class="dm-wrap">
   <div class="dm-head">
-    <h2>备忘录</h2><span class="dm-count">129 条 · 8 条待处理</span><span class="dm-spacer"></span>
-    <span class="dm-sync"><span class="dm-dot"></span>已同步</span>
-    <button class="dm-syncbtn"><svg viewBox="0 0 24 24" width="13" height="13"><path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 3v6h-6"/></svg>立即同步</button>
-    <input placeholder="搜索…" style="width:150px;padding:5px 9px;border-radius:8px;font:inherit;font-size:12px;border:1px solid var(--dsw-alias-border-l1);background:var(--dsw-alias-bg-layer-1);color:inherit">
+    <h2>Memo</h2><span class="dm-count">129 notes · 8 open</span><span class="dm-spacer"></span>
+    <span class="dm-sync"><span class="dm-dot"></span>Synced</span>
+    <button class="dm-syncbtn"><svg viewBox="0 0 24 24" width="13" height="13"><path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 3v6h-6"/></svg>Sync now</button>
+    <input placeholder="Search…" style="width:150px;padding:5px 9px;border-radius:8px;font:inherit;font-size:12px;border:1px solid var(--dsw-alias-border-l1);background:var(--dsw-alias-bg-layer-1);color:inherit">
     <button class="dm-ib"><svg viewBox="0 0 24 24" width="14" height="14"><path d="M3 6h18M3 12h18M3 18h18"/><circle cx="9" cy="6" r="2.2"/><circle cx="15" cy="12" r="2.2"/><circle cx="8" cy="18" r="2.2"/></svg></button>
   </div>
 
   <div class="dm-compose" style="border-color:var(--dsw-alias-brand-primary)">
-    <textarea class="dm-ta">王工刚说接口字段要加 version，老客户端会挂，需要在服务端做兼容 #需求变更 #接口</textarea>
+    <textarea class="dm-ta">Wang says the API needs a version field — old clients will break; handle it server-side #requirement #api</textarea>
     <div class="dm-thumbs">
       <div class="dm-thumb">
         <svg viewBox="0 0 56 56" width="56" height="56"><rect width="56" height="56" fill="#1f2a3d"/><rect x="6" y="8" width="34" height="6" rx="3" fill="#5b7bc4"/><rect x="6" y="18" width="44" height="4" rx="2" fill="#3d5480"/><rect x="6" y="26" width="38" height="4" rx="2" fill="#3d5480"/><rect x="6" y="34" width="24" height="4" rx="2" fill="#3d5480"/><rect x="6" y="42" width="32" height="4" rx="2" fill="#4a6396"/></svg>
@@ -237,30 +237,30 @@ input,textarea{font:inherit;color:inherit;background:none;border:none;outline:no
       </div>
     </div>
     <div class="dm-row">
-      <button class="dm-btn"><svg viewBox="0 0 24 24" width="13" height="13"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>图片</button>
-      <span class="dm-hint">Enter 保存 · ⇧Enter 换行 · 图片可多选 · 打 #标签 自动创建</span>
+      <button class="dm-btn"><svg viewBox="0 0 24 24" width="13" height="13"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>Image</button>
+      <span class="dm-hint">Enter to save · ⇧Enter for newline · multi-select · type #tag to create</span>
       <span class="dm-spacer"></span>
-      <button class="dm-btn pri">保存</button>
+      <button class="dm-btn pri">Save</button>
     </div>
   </div>
 
   <div class="dm-filters">
-    <button class="dm-chip on">全部 129</button><button class="dm-chip">待处理 8</button>
-    <button class="dm-chip">已完成 121</button><button class="dm-chip">今天 10</button><button class="dm-chip">置顶</button>
+    <button class="dm-chip on">All 129</button><button class="dm-chip">Open 8</button>
+    <button class="dm-chip">Done 121</button><button class="dm-chip">Today 10</button><button class="dm-chip">Pinned</button>
   </div>
   <div class="dm-tagbox">
-    <span style="opacity:.7">标签</span>
-    <button class="dm-chip">#需求变更 24</button><button class="dm-chip">#接口 3</button>
-    <button class="dm-chip">#跟进 12</button><button class="dm-chip">#待办 9</button><button class="dm-chip">#客户 6</button>
-    <span class="dm-tagnew">打 #名字 新建</span>
+    <span style="opacity:.7">Tags</span>
+    <button class="dm-chip">#requirement 24</button><button class="dm-chip">#api 3</button>
+    <button class="dm-chip">#follow-up 12</button><button class="dm-chip">#todo 9</button><button class="dm-chip">#customer 6</button>
+    <span class="dm-tagnew">type #name to create</span>
   </div>
   <div class="dm-list">
-    <div class="dm-day">今天</div>
+    <div class="dm-day">Today</div>
     <div class="dm-card">
       <button class="dm-cb"></button>
       <div class="dm-body">
-        <div class="dm-txt">王工刚说接口字段要加 version，老客户端会挂，需要在服务端做兼容</div>
-        <div class="dm-meta"><span class="dm-tag">#需求变更</span><span class="dm-tag">#接口</span><span>刚刚</span></div>
+        <div class="dm-txt">Wang says the API needs a version field — old clients will break; handle it server-side</div>
+        <div class="dm-meta"><span class="dm-tag">#requirement</span><span class="dm-tag">#api</span><span>just now</span></div>
         <div class="dm-imgs">
           <svg viewBox="0 0 76 76" width="76" height="76"><rect width="76" height="76" fill="#1f2a3d"/><rect x="8" y="10" width="44" height="7" rx="3.5" fill="#5b7bc4"/><rect x="8" y="23" width="60" height="5" rx="2.5" fill="#3d5480"/><rect x="8" y="33" width="52" height="5" rx="2.5" fill="#3d5480"/><rect x="8" y="43" width="30" height="5" rx="2.5" fill="#3d5480"/></svg>
           <svg viewBox="0 0 76 76" width="76" height="76"><rect width="76" height="76" fill="#20302a"/><rect x="9" y="13" width="58" height="36" rx="4" fill="#2c4239"/><rect x="15" y="21" width="32" height="5" rx="2.5" fill="#5fa080"/><rect x="15" y="31" width="44" height="4" rx="2" fill="#456b58"/></svg>
@@ -270,15 +270,15 @@ input,textarea{font:inherit;color:inherit;background:none;border:none;outline:no
     <div class="dm-card">
       <button class="dm-cb"></button>
       <div class="dm-body">
-        <div class="dm-txt">张总说登录页要加「微信扫码」入口，下周三前给一版原型</div>
-        <div class="dm-meta"><span class="dm-tag">#需求变更</span><span class="dm-tag">#登录</span><span>来源：张总</span><span>14:32</span></div>
+        <div class="dm-txt">Zhang wants a WeChat QR login entry on the login page; prototype due next Wednesday</div>
+        <div class="dm-meta"><span class="dm-tag">#requirement</span><span class="dm-tag">#login</span><span>Source: Zhang</span><span>14:32</span></div>
       </div>
     </div>
     <div class="dm-card">
       <button class="dm-cb"></button>
       <div class="dm-body">
-        <div class="dm-txt">周五前把 Q4 排期表发给李工，他那边要提前排人力</div>
-        <div class="dm-meta"><span class="dm-tag">#待办</span><span>来源：Q4 排期讨论</span><span>11:05</span></div>
+        <div class="dm-txt">Send the Q4 schedule to Li by Friday — he needs to allocate people early</div>
+        <div class="dm-meta"><span class="dm-tag">#todo</span><span>Source: Q4 planning thread</span><span>11:05</span></div>
       </div>
     </div>
   </div>
@@ -288,30 +288,30 @@ input,textarea{font:inherit;color:inherit;background:none;border:none;outline:no
 <!-- ================= 设置弹层 ================= -->
 <div class="page scene scene-settings" style="display:none">
   <div class="dm-wrap" style="opacity:.35;pointer-events:none">
-    <div class="dm-head"><h2>备忘录</h2><span class="dm-count">128 条 · 7 条待处理</span><span class="dm-spacer"></span>
-      <span class="dm-sync"><span class="dm-dot"></span>已同步</span>
-      <button class="dm-syncbtn"><svg viewBox="0 0 24 24" width="13" height="13"><path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 3v6h-6"/></svg>立即同步</button>
-      <input placeholder="搜索…" style="width:150px;padding:5px 9px;border-radius:8px;font:inherit;font-size:12px;border:1px solid var(--dsw-alias-border-l1);background:var(--dsw-alias-bg-layer-1);color:inherit">
+    <div class="dm-head"><h2>Memo</h2><span class="dm-count">128 notes · 7 open</span><span class="dm-spacer"></span>
+      <span class="dm-sync"><span class="dm-dot"></span>Synced</span>
+      <button class="dm-syncbtn"><svg viewBox="0 0 24 24" width="13" height="13"><path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 3v6h-6"/></svg>Sync now</button>
+      <input placeholder="Search…" style="width:150px;padding:5px 9px;border-radius:8px;font:inherit;font-size:12px;border:1px solid var(--dsw-alias-border-l1);background:var(--dsw-alias-bg-layer-1);color:inherit">
       <button class="dm-ib"><svg viewBox="0 0 24 24" width="14" height="14"><path d="M3 6h18M3 12h18M3 18h18"/><circle cx="9" cy="6" r="2.2"/><circle cx="15" cy="12" r="2.2"/><circle cx="8" cy="18" r="2.2"/></svg></button>
     </div>
-    <div class="dm-compose"><textarea class="dm-ta" placeholder="记点什么…"></textarea></div>
+    <div class="dm-compose"><textarea class="dm-ta" placeholder="Note something…"></textarea></div>
     <div class="dm-list"></div>
   </div>
   <div class="dm-modal" style="position:absolute">
     <div class="dm-dlg">
-      <h3>GitHub 同步</h3>
-      <div class="sub">同步的是文本层（notes/ 每条一个 .md、attachments/ 图片、log/ 事件日志）；SQLite 只作本地索引，不进仓库。令牌保存在数据目录的 .token（权限 0600），已被 .gitignore 忽略，永远不会提交。</div>
-      <div class="dm-field"><label>仓库</label>
+      <h3>GitHub sync</h3>
+      <div class="sub">What syncs is the text layer (one .md per note under notes/, images under attachments/, the event log under log/); SQLite is only a local index and never enters the repository. The token lives in .token (mode 0600), is git-ignored, and is never committed.</div>
+      <div class="dm-field"><label>Repository</label>
         <input value="yourname/dsh-memo-data" readonly>
-        <div class="help">私有仓库即可，例：yourname/dsh-memo-data；留空 = 只在本地保存</div>
+        <div class="help">私有Repository即可，例：yourname/dsh-memo-data；留空 = 只在本地Save</div>
       </div>
-      <div class="dm-field"><label>访问令牌（Fine-grained PAT）</label>
+      <div class="dm-field"><label>Access token (fine-grained PAT)</label>
         <input type="password" value="github_pat_xxxxxxxxxxxxxxxx" readonly>
-        <div class="help">权限只需 Contents: Read and write。留空表示不改动已保存的令牌。</div>
+        <div class="help">Only Contents: Read and write is needed. Leave empty to keep the stored token unchanged.</div>
       </div>
       <div class="dm-dlgfoot">
-        <button class="dm-btn pri">保存并同步</button><span class="dm-spacer"></span>
-        <button class="dm-btn">关闭</button>
+        <button class="dm-btn pri">Save and sync</button><span class="dm-spacer"></span>
+        <button class="dm-btn">Close</button>
       </div>
     </div>
   </div>
@@ -321,35 +321,35 @@ input,textarea{font:inherit;color:inherit;background:none;border:none;outline:no
 <div class="page scene scene-search" style="display:none">
 <div class="dm-wrap">
   <div class="dm-head">
-    <h2>备忘录</h2><span class="dm-count">128 条 · 7 条待处理</span><span class="dm-spacer"></span>
-    <span class="dm-sync"><span class="dm-dot"></span>已同步</span>
-    <button class="dm-syncbtn"><svg viewBox="0 0 24 24" width="13" height="13"><path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 3v6h-6"/></svg>立即同步</button>
-    <input value="扫码  #需求变更" style="width:170px;padding:5px 9px;border-radius:8px;font:inherit;font-size:12px;border:1px solid var(--dsw-alias-brand-primary);background:var(--dsw-alias-bg-layer-1);color:inherit">
+    <h2>Memo</h2><span class="dm-count">128 notes · 7 open</span><span class="dm-spacer"></span>
+    <span class="dm-sync"><span class="dm-dot"></span>Synced</span>
+    <button class="dm-syncbtn"><svg viewBox="0 0 24 24" width="13" height="13"><path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 3v6h-6"/></svg>Sync now</button>
+    <input value="scan  #requirement" style="width:170px;padding:5px 9px;border-radius:8px;font:inherit;font-size:12px;border:1px solid var(--dsw-alias-brand-primary);background:var(--dsw-alias-bg-layer-1);color:inherit">
     <button class="dm-ib"><svg viewBox="0 0 24 24" width="14" height="14"><path d="M3 6h18M3 12h18M3 18h18"/><circle cx="9" cy="6" r="2.2"/><circle cx="15" cy="12" r="2.2"/><circle cx="8" cy="18" r="2.2"/></svg></button>
   </div>
   <div class="dm-filters">
-    <button class="dm-chip on">全部 3</button><button class="dm-chip">近 7 天</button>
-    <button class="dm-chip">有图片</button><button class="dm-chip">未完成</button>
+    <button class="dm-chip on">All 3</button><button class="dm-chip">Last 7 days</button>
+    <button class="dm-chip">有Image</button><button class="dm-chip">Open</button>
   </div>
-  <div class="dm-tagbox"><span style="opacity:.7">标签</span>
-    <button class="dm-chip on">#需求变更 3</button><button class="dm-chip">#登录 1</button>
-    <span class="dm-tagnew">打 #名字 新建</span>
+  <div class="dm-tagbox"><span style="opacity:.7">Tags</span>
+    <button class="dm-chip on">#requirement 3</button><button class="dm-chip">#login 1</button>
+    <span class="dm-tagnew">type #name to create</span>
   </div>
   <div class="dm-list">
-    <div class="dm-day">找到 3 条 · 用时 6 ms</div>
+    <div class="dm-day">Found 3 条 · in 6 ms</div>
     <div class="dm-card">
       <button class="dm-cb"></button>
       <div class="dm-body">
-        <div class="dm-txt">张总说登录页要加「微信<span class="dm-hl">扫码</span>」入口，下周三前给一版原型</div>
-        <div class="dm-meta"><span class="dm-tag">#需求变更</span><span>来源：张总</span><span>今天 14:32</span></div>
+        <div class="dm-txt">Zhang说登录页要加「微信<span class="dm-hl">scan</span>」入口，下周三前给一版原型</div>
+        <div class="dm-meta"><span class="dm-tag">#requirement</span><span>Source: Zhang</span><span>Today 14:32</span></div>
         <div class="dm-imgs"><svg viewBox="0 0 76 76" width="76" height="76"><rect width="76" height="76" fill="#1f2a3d"/><rect x="8" y="10" width="44" height="7" rx="3.5" fill="#5b7bc4"/><rect x="8" y="23" width="60" height="5" rx="2.5" fill="#3d5480"/><rect x="8" y="33" width="52" height="5" rx="2.5" fill="#3d5480"/><rect x="8" y="43" width="30" height="5" rx="2.5" fill="#3d5480"/></svg></div>
       </div>
     </div>
     <div class="dm-card">
       <button class="dm-cb"></button>
       <div class="dm-body">
-        <div class="dm-txt">微信<span class="dm-hl">扫码</span>的 SDK 申请流程大概 3 个工作日，别卡到最后一天</div>
-        <div class="dm-meta"><span class="dm-tag">#需求变更</span><span>来源：张总</span><span>昨天 17:12</span></div>
+        <div class="dm-txt">微信<span class="dm-hl">scan</span>的 SDK 申请流程大概 3 个工作日，别卡到最后一天</div>
+        <div class="dm-meta"><span class="dm-tag">#requirement</span><span>Source: Zhang</span><span>Yesterday 17:12</span></div>
       </div>
     </div>
   </div>
@@ -360,172 +360,63 @@ input,textarea{font:inherit;color:inherit;background:none;border:none;outline:no
 <div class="page scene scene-gif" id="gifpage" style="display:none">
 <div class="dm-wrap">
   <div class="dm-head">
-    <h2>备忘录</h2><span class="dm-count">128 条 · 7 条待处理</span><span class="dm-spacer"></span>
-    <span class="dm-sync"><span class="dm-dot"></span>已同步</span>
-    <button class="dm-syncbtn"><svg viewBox="0 0 24 24" width="13" height="13"><path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 3v6h-6"/></svg>立即同步</button>
-    <input placeholder="搜索…" style="width:150px;padding:5px 9px;border-radius:8px;font:inherit;font-size:12px;border:1px solid var(--dsw-alias-border-l1);background:var(--dsw-alias-bg-layer-1);color:inherit">
+    <h2>Memo</h2><span class="dm-count">128 notes · 7 open</span><span class="dm-spacer"></span>
+    <span class="dm-sync"><span class="dm-dot"></span>Synced</span>
+    <button class="dm-syncbtn"><svg viewBox="0 0 24 24" width="13" height="13"><path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 3v6h-6"/></svg>Sync now</button>
+    <input placeholder="Search…" style="width:150px;padding:5px 9px;border-radius:8px;font:inherit;font-size:12px;border:1px solid var(--dsw-alias-border-l1);background:var(--dsw-alias-bg-layer-1);color:inherit">
     <button class="dm-ib"><svg viewBox="0 0 24 24" width="14" height="14"><path d="M3 6h18M3 12h18M3 18h18"/><circle cx="9" cy="6" r="2.2"/><circle cx="15" cy="12" r="2.2"/><circle cx="8" cy="18" r="2.2"/></svg></button>
   </div>
 
   <div class="dm-compose" id="gcompose">
-    <textarea class="dm-ta" id="gta" placeholder="记点什么…  例：张总要登录页加微信扫码，下周三前给原型 #需求变更"></textarea>
+    <textarea class="dm-ta" id="gta" placeholder="Note something…  e.g. WeChat QR login on the login page, prototype due Wednesday #requirement"></textarea>
     <div class="dm-thumbs" id="gthumb" style="display:none">
       <div class="dm-thumb">
         <svg viewBox="0 0 56 56" width="56" height="56"><rect width="56" height="56" fill="#1f2a3d"/><rect x="6" y="8" width="34" height="6" rx="3" fill="#5b7bc4"/><rect x="6" y="18" width="44" height="4" rx="2" fill="#3d5480"/><rect x="6" y="26" width="38" height="4" rx="2" fill="#3d5480"/><rect x="6" y="34" width="24" height="4" rx="2" fill="#3d5480"/></svg>
       </div>
     </div>
     <div class="dm-row">
-      <button class="dm-btn"><svg viewBox="0 0 24 24" width="13" height="13"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>图片</button>
-      <span class="dm-hint">Enter 保存 · ⇧Enter 换行 · 图片可多选 · 打 #标签 自动创建</span>
+      <button class="dm-btn"><svg viewBox="0 0 24 24" width="13" height="13"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>Image</button>
+      <span class="dm-hint">Enter to save · ⇧Enter for newline · multi-select · type #tag to create</span>
       <span class="dm-spacer"></span>
-      <button class="dm-btn pri" id="gsave">保存</button>
+      <button class="dm-btn pri" id="gsave">Save</button>
     </div>
   </div>
 
   <div class="dm-filters">
-    <button class="dm-chip on">全部 <span id="gcount">128</span></button><button class="dm-chip">待处理 <span id="gtodo">7</span></button>
-    <button class="dm-chip">已完成 121</button><button class="dm-chip">今天</button><button class="dm-chip">置顶</button>
+    <button class="dm-chip on">All <span id="gcount">128</span></button><button class="dm-chip">Open <span id="gtodo">7</span></button>
+    <button class="dm-chip">Done 121</button><button class="dm-chip">Today</button><button class="dm-chip">Pinned</button>
   </div>
-  <div class="dm-tagbox"><span style="opacity:.7">标签</span>
-    <button class="dm-chip">#需求变更 <span id="gtag">23</span></button><button class="dm-chip">#接口</button>
-    <button class="dm-chip">#跟进 12</button><button class="dm-chip">#待办 9</button>
-    <span class="dm-tagnew">打 #名字 新建</span>
+  <div class="dm-tagbox"><span style="opacity:.7">Tags</span>
+    <button class="dm-chip">#requirement <span id="gtag">23</span></button><button class="dm-chip">#api</button>
+    <button class="dm-chip">#follow-up 12</button><button class="dm-chip">#todo 9</button>
+    <span class="dm-tagnew">type #name to create</span>
   </div>
   <div class="dm-list" id="glist">
-    <div class="dm-day">今天</div>
+    <div class="dm-day">Today</div>
     <div class="dm-card">
       <button class="dm-cb"></button>
       <div class="dm-body">
-        <div class="dm-txt">张总说登录页要加「微信扫码」入口，下周三前给一版原型</div>
-        <div class="dm-meta"><span class="dm-tag">#需求变更</span><span class="dm-tag">#登录</span><span>来源：张总</span><span>14:32</span></div>
+        <div class="dm-txt">Zhang wants a WeChat QR login entry on the login page; prototype due next Wednesday</div>
+        <div class="dm-meta"><span class="dm-tag">#requirement</span><span class="dm-tag">#login</span><span>Source: Zhang</span><span>14:32</span></div>
       </div>
     </div>
     <div class="dm-card">
       <button class="dm-cb"></button>
       <div class="dm-body">
-        <div class="dm-txt">周五前把 Q4 排期表发给李工，他那边要提前排人力</div>
-        <div class="dm-meta"><span class="dm-tag">#待办</span><span>来源：Q4 排期讨论</span><span>11:05</span></div>
+        <div class="dm-txt">Send the Q4 schedule to Li by Friday — he needs to allocate people early</div>
+        <div class="dm-meta"><span class="dm-tag">#todo</span><span>Source: Q4 planning thread</span><span>11:05</span></div>
       </div>
     </div>
   </div>
 
   <div class="dm-toast ok" id="gtoast" style="display:none">
     <svg viewBox="0 0 24 24" width="15" height="15"><path d="M20 6L9 17l-5-5"/></svg>
-    <span>已同步到 GitHub</span>
+    <span>Synced到 GitHub</span>
   </div>
 </div>
 </div>
 
 <script>
-    /* ---- 演示页国际化：?lang=en 时按文本节点替换（长 key 优先）---- */
-    var I18N_EN = {
-      "记点什么…  例：张总要登录页加微信扫码，下周三前给原型 #需求变更": "Note something…  e.g. WeChat QR login on the login page, prototype due Wednesday #requirement",
-      "Enter 保存 · ⇧Enter 换行 · 图片可多选 · 打 #标签 自动创建": "Enter to save · ⇧Enter for newline · multi-select · type #tag to create",
-      "同步的是文本层（notes/ 每条一个 .md、attachments/ 图片、log/ 事件日志）；SQLite 只作本地索引，不进仓库。令牌保存在数据目录的 .token（权限 0600），已被 .gitignore 忽略，永远不会提交。": "What syncs is the text layer (one .md per note under notes/, images under attachments/, the event log under log/); SQLite is only a local index and never enters the repository. The token lives in .token (mode 0600), is git-ignored, and is never committed.",
-      "私有仓库即可，例：yourname/dsh-memo-data；留空 = 只在本地保存": "A private repo is fine, e.g. yourname/dsh-memo-data; leave empty to keep everything local",
-      "权限只需 Contents: Read and write。留空表示不改动已保存的令牌。": "Only Contents: Read and write is needed. Leave empty to keep the stored token unchanged.",
-      "张总说登录页要加「微信扫码」入口，下周三前给一版原型": "Zhang wants a WeChat QR login entry on the login page; prototype due next Wednesday",
-      "张总说登录页要加「微信": "Zhang wants a WeChat QR login entry on the login page「",
-      "周五前把 Q4 排期表发给李工，他那边要提前排人力": "Send the Q4 schedule to Li by Friday — he needs to allocate people early",
-      "客户反馈导出报表缺少「负责人」字段，等产品确认口径后回复": "Customer says the exported report lacks an Owner column; reply once PM confirms the definition",
-      "王工刚说接口字段要加 version，老客户端会挂，需要在服务端做兼容 #需求变更 #接口": "Wang says the API needs a version field — old clients will break; handle it server-side #requirement #api",
-      "王工刚说接口字段要加 version，老客户端会挂，需要在服务端做兼容": "Wang says the API needs a version field — old clients will break; handle it server-side",
-      "的 SDK 申请流程大概 3 个工作日，别卡到最后一天": " SDK application takes about 3 business days — do not leave it to the last day",
-      "确认下周一评审会议时间改到 10:00": "Confirm: next Monday review moved to 10:00",
-      "」入口，下周三前给一版原型": "\" entry; prototype due next Wednesday",
-      "访问令牌（Fine-grained PAT）": "Access token (fine-grained PAT)",
-      "128 条 · 7 条待处理": "128 notes · 7 open",
-      "129 条 · 8 条待处理": "129 notes · 8 open",
-      "找到 3 条 · 用时 6 ms": "Found 3 notes · in 6 ms",
-      "私有仓库占位": "",
-      "已同步到 GitHub": "Synced to GitHub",
-      "保存并同步": "Save and sync",
-      "来源：Q4 排期讨论": "Source: Q4 planning thread",
-      "来源：客户群": "Source: Customer group",
-      "来源：张总": "Source: Zhang",
-      "昨天 18:20": "Yesterday 18:20",
-      "昨天 17:12": "Yesterday 17:12",
-      "昨天 09:41": "Yesterday 09:41",
-      "今天 14:32": "Today 14:32",
-      "今天 10": "Today 10",
-      "今天 9": "Today 9",
-      "全部 128": "All 128",
-      "全部 129": "All 129",
-      "全部 3": "All 3",
-      "待处理 7": "Open 7",
-      "待处理 8": "Open 8",
-      "已完成 121": "Done 121",
-      "#需求变更 24": "#requirement 24",
-      "#需求变更 23": "#requirement 23",
-      "#需求变更 3": "#requirement 3",
-      "#登录 1": "#login 1",
-      "#跟进 12": "#follow-up 12",
-      "#待办 9": "#todo 9",
-      "#接口 3": "#api 3",
-      "#灵感 4": "#idea 4",
-      "#客户 6": "#customer 6",
-      "打 #名字 新建": "type #name to create",
-      "近 7 天": "Last 7 days",
-      "有图片": "With images",
-      "dsh-memo 演示": "dsh-memo demo",
-      "GitHub 同步": "GitHub sync",
-      "立即同步": "Sync now",
-      "已同步": "Synced",
-      "备忘录": "Memo",
-      "记点什么…": "Note something…",
-      "搜索…": "Search…",
-      "标签": "Tags",
-      "置顶": "Pinned",
-      "找到": "Found",
-      "刚刚": "just now",
-      "关闭": "Close",
-      "仓库": "Repository",
-      "保存": "Save",
-      "全部": "All",
-      "待处理": "Open",
-      "已完成": "Done",
-      "今天": "Today",
-      "昨天": "Yesterday",
-      "图片": "Image",
-      "未完成": "Open",
-      "#需求变更": "#requirement",
-      "#登录": "#login",
-      "#待办": "#todo",
-      "#跟进": "#follow-up",
-      "#接口": "#api",
-      "#灵感": "#idea",
-      "#客户": "#customer",
-      "扫码": "QR"
-};
-    function localizeDemo() {
-      var lang = (location.search.match(/lang=([a-z]+)/) || [])[1] || 'zh';
-      if (lang !== 'en') return;
-      var keys = Object.keys(I18N_EN).sort(function (a, b) { return b.length - a.length });
-      function tr(text) {
-        var out = text;
-        for (var i = 0; i < keys.length; i++) {
-          if (out.indexOf(keys[i]) >= 0) out = out.split(keys[i]).join(I18N_EN[keys[i]]);
-        }
-        return out;
-      }
-      var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
-      var nodes = [];
-      while (walker.nextNode()) nodes.push(walker.currentNode);
-      nodes.forEach(function (n) {
-        if (/[\u4e00-\u9fa5]/.test(n.nodeValue)) n.nodeValue = tr(n.nodeValue);
-      });
-      document.querySelectorAll('[placeholder]').forEach(function (el) {
-        el.setAttribute('placeholder', tr(el.getAttribute('placeholder')));
-      });
-      // input 的当前值也要翻译（属性 + property 双写，否则已渲染的值不变）
-      document.querySelectorAll('input[value]').forEach(function (el) {
-        var v = tr(el.getAttribute('value'));
-        el.setAttribute('value', v);
-        el.value = v;
-      });
-      if (/[\u4e00-\u9fa5]/.test(document.title)) document.title = tr(document.title);
-    }
-
 // 场景切换：#panel / #compose / #settings / #search，或 #f1..#f4（GIF 帧）
 function applyHash(){
   var h = (location.hash || '#panel').slice(1);
@@ -542,10 +433,10 @@ function renderFrame(n){
       list=document.getElementById('glist'), toast=document.getElementById('gtoast'),
       compose=document.getElementById('gcompose'), count=document.getElementById('gcount'),
       todo=document.getElementById('gtodo'), tag=document.getElementById('gtag');
-  var text='王工刚说接口字段要加 version，老客户端会挂，需要在服务端做兼容 #需求变更 #接口';
+  var text='Wang says the API needs a version field — old clients will break; handle it server-side #requirement #api';
   var newCard='<div class="dm-card" id="gnew"><button class="dm-cb"></button><div class="dm-body">'
-    +'<div class="dm-txt">王工刚说接口字段要加 version，老客户端会挂，需要在服务端做兼容</div>'
-    +'<div class="dm-meta"><span class="dm-tag">#需求变更</span><span class="dm-tag">#接口</span><span>刚刚</span></div>'
+    +'<div class="dm-txt">Wang says the API needs a version field — old clients will break; handle it server-side</div>'
+    +'<div class="dm-meta"><span class="dm-tag">#requirement</span><span class="dm-tag">#api</span><span>just now</span></div>'
     +(n>=3?'<div class="dm-imgs"><svg viewBox="0 0 76 76" width="76" height="76"><rect width="76" height="76" fill="#1f2a3d"/><rect x="8" y="10" width="44" height="7" rx="3.5" fill="#5b7bc4"/><rect x="8" y="23" width="60" height="5" rx="2.5" fill="#3d5480"/><rect x="8" y="33" width="52" height="5" rx="2.5" fill="#3d5480"/><rect x="8" y="43" width="30" height="5" rx="2.5" fill="#3d5480"/></svg></div>':'')
     +'</div></div>';
   var firstCard=list.querySelector('.dm-card');
@@ -570,7 +461,6 @@ function renderFrame(n){
 // 给 GIF 帧用的“打字中”效果由多帧生成，这里只需静态状态
 window.addEventListener('hashchange', applyHash);
 applyHash();
-localizeDemo();
 // 允许指定帧
 (function(){ var m=/frame=(\d)/.exec(location.search); if(m) renderFrame(parseInt(m[1],10)); })();
 </script>

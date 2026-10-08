@@ -7,15 +7,15 @@
 > Built for the moment a requirement changes mid-conversation: **capture it in seconds, find it later, keep the context, never lose it.**
 
 <p align="center">
-  <img src="docs/images/demo.gif" width="720" alt="Capture a note; it syncs to GitHub"><br>
+  <img src="docs/images/en/demo.gif" width="720" alt="Capture a note; it syncs to GitHub"><br>
   <sub>Type it, press Enter — thirty seconds later it is in your private GitHub repository</sub>
 </p>
 
 | Main panel | Capturing with images |
 |:---:|:---:|
-| [![Main panel](docs/images/panel.png)](docs/images/panel.png) | [![Capturing](docs/images/compose.png)](docs/images/compose.png) |
+| [![Main panel](docs/images/en/panel.png)](docs/images/en/panel.png) | [![Capturing](docs/images/en/compose.png)](docs/images/en/compose.png) |
 | **Search across everything** | **GitHub sync settings** |
-| [![Search](docs/images/search.png)](docs/images/search.png) | [![Settings](docs/images/settings.png)](docs/images/settings.png) |
+| [![Search](docs/images/en/search.png)](docs/images/en/search.png) | [![Settings](docs/images/en/settings.png)](docs/images/en/settings.png) |
 
 
 ---

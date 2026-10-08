@@ -13,6 +13,7 @@ import { homedir } from 'node:os'
 import { fileURLToPath } from 'node:url'
 
 const HERE = dirname(fileURLToPath(import.meta.url))
+let capturedDict = null
 const BUNDLE = join(HERE, '..', 'lib', 'client.js')
 const req = createRequire(import.meta.url)
 
@@ -86,12 +87,18 @@ const moduleExports = registered.factory((name) => {
 })
 check('导出 apply', typeof moduleExports.apply === 'function')
 check('导出 inject 且含 slots', Array.isArray(moduleExports.inject) && moduleExports.inject.includes('slots'), JSON.stringify(moduleExports.inject))
+check('导出 inject 含 locale（跟随 DSH 语言）', moduleExports.inject.includes('locale'), JSON.stringify(moduleExports.inject))
 
 // ---- 调用 apply，捕获 slot 注册 ----
 const registrations = []
 const injections = []
+capturedDict = null
 const ctx = {
   effect(fn, label) { const d = fn(); return typeof d === 'function' ? d : () => {} },
+  locale: {
+    register(ns, dict) { capturedDict = dict; return () => {} },
+    bind(ns) { return (key) => (capturedDict && capturedDict.zh && capturedDict.zh[key]) || key },
+  },
   slots: {
     inject(name, cb) { injections.push(name); const d = cb(); return typeof d === 'function' ? d : () => {} },
     register(options, Component) { registrations.push({ options, Component }); return () => {} },
@@ -101,6 +108,8 @@ moduleExports.apply(ctx)
 
 check('调用了 slots.inject', injections.length >= 2, injections.join(','))
 check('样式已注入 <head>', styleNodes.length === 1, `styles=${styleNodes.length}`)
+check('注册了 zh/en 两套字典', !!(capturedDict && capturedDict.zh && capturedDict.en), capturedDict ? Object.keys(capturedDict).join(',') : 'null')
+check('字典 zh/en 键位一一对应', (() => { if (!capturedDict) return false; const a = Object.keys(capturedDict.zh).sort(), b = Object.keys(capturedDict.en).sort(); return JSON.stringify(a) === JSON.stringify(b) })(), '')
 
 const panel = registrations.find((r) => r.options.name === 'main')
 const icon = registrations.find((r) => r.options.name === 'sidebar.panellist')
