@@ -1,0 +1,18 @@
+# dsh-memo bundle patch — 单行插入到 profile 根。
+#
+# 安装：dsh plugin --profile desktop add link:~/.dsh/dev/dsh-memo
+# 之后重启 dsh web/desktop 生效（host 半侧代码在进程启动时加载）。
+- insert:
+    - id: memo
+      name: 'dsh-memo'
+      config:
+        # 数据根目录（留空则用 ~/.dsh/memo）。它同时是同步用的 git 仓库。
+        dataDir: ''
+        # GitHub 同步：仓库与分支。token 不在这里，走 DSH 凭据服务或环境变量。
+        repo: ''
+        branch: main
+        remote: origin
+        # 变更后自动推送的防抖毫秒数；0 = 关闭自动推送（只本地提交）
+        pushDebounceMs: 30000
+        # 每日 SQLite 紧凑快照保留份数
+        snapshotKeep: 7

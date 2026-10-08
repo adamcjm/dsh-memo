@@ -1,0 +1,50 @@
+{
+  "name": "dsh-memo",
+  "version": "0.1.0",
+  "description": "DeepSeek Harness 备忘录插件：侧边栏入口 + 快速记录，本地 SQLite 存储，GitHub 私有仓库同步，支持图片与截图。",
+  "author": "adamcjm",
+  "license": "MIT",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./client": "./lib/client.js",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib",
+    "cordis.patch.yml",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "deepseek-harness",
+    "dsh",
+    "plugin",
+    "memo",
+    "notes",
+    "sqlite"
+  ],
+  "engines": {
+    "node": ">=22.5.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adamcjm/dsh-memo.git"
+  },
+  "homepage": "https://github.com/adamcjm/dsh-memo#readme",
+  "bugs": {
+    "url": "https://github.com/adamcjm/dsh-memo/issues"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "inject": [],
+      "platform": "web"
+    },
+    "manifestVersion": 1
+  }
+}

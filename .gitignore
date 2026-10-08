@@ -1,0 +1,12 @@
+# 依赖与构建产物
+node_modules/
+
+# 本地凭据 / 数据（这个仓库只放插件代码，不放用户数据）
+.token
+*.sqlite
+memo.db*
+
+# 杂项
+.DS_Store
+*.log
+*.tmp
