@@ -22,8 +22,10 @@ new Function('window', 'document', 'fetch', code)(
 
 const ex = reg.factory((n) => { if (n === 'react') return React; throw new Error('unexpected ' + n) })
 const regs = []
+let dict = null
 ex.apply({
   effect: (f) => { f(); return () => {} },
+  locale: { register: (ns, d) => { dict = d; return () => {} }, bind: (ns) => (k) => (dict && dict.zh && dict.zh[k]) || k },
   slots: { inject: (n, cb) => { cb(); return () => {} }, register: (o, C) => { regs.push({ o, C }); return () => {} } },
 })
 const Panel = regs.find((r) => r.o.name === 'main').C
@@ -80,6 +82,22 @@ check('界面上明确提示「打 #名字 新建」', html.includes('打 #名�
   const host = await readFile(join(HERE, '..', 'lib', 'index.js'), 'utf8')
   check('host 侧对任意新标签会自动建（ensureTag）', host.includes('async ensureTag'))
   check('创建时会把正文里的 #标签 抽出来入库', host.includes('extractTags'))
+}
+
+
+console.log('\n[6] 根容器必须自己能撑满（真机回归）')
+{
+  const css = await readFile(join(HERE, '..', 'lib', 'client.js'), 'utf8')
+  const rule = css.match(/\.dm-wrap\{([^}]*)\}/)
+  const body = rule ? rule[1] : ''
+  check('.dm-wrap 声明了 flex 增长', /flex:1 1 auto/.test(body), body.slice(0, 80))
+  check('.dm-wrap 声明了 width:100%', /width:100%/.test(body), body.slice(0, 80))
+  check('.dm-wrap 有 min-width:0（防 flex 子项撑破）', /min-width:0/.test(body))
+  check('.dm-wrap 有 box-sizing:border-box', /box-sizing:border-box/.test(body))
+  // 演示页必须严格模拟真机的 flex row 父容器，且不替插件兜底
+  const demo = await readFile(join(HERE, '..', 'docs', 'demo.html'), 'utf8')
+  check('演示页模拟了 flex row 父容器', /\.page\{display:flex;flex-direction:row;align-items:stretch\}/.test(demo))
+  check('演示页没有替插件兜底 flex/width', !/\.page > \.dm-wrap\{/.test(demo))
 }
 
 console.log('\n' + pass + ' 通过 / ' + fail + ' 失败')
