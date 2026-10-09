@@ -89,7 +89,7 @@ dsh plugin --profile <你的 profile> add link:/path/to/dsh-memo
      },
      "dependencies": {
        // ...
-       "@adamcjm/dsh-memo": "^0.2.7"                // ← 追加
+       "@adamcjm/dsh-memo": "^0.2.8"                // ← 追加
      }
    }
    ```
@@ -296,6 +296,7 @@ node test/ui-feedback-check.mjs  # 界面细节 75 项（含置顶、拖拽接�
 node test/tag-rules-check.mjs    # 标签规则与编辑往返 52 项（位置 / 保真 / host-client 一致）
 node test/reorder-check.mjs      # 顺序语义 20 项（完成不跳位 / 拖拽持久化 / 老库迁移）
 node test/drag-check.mjs         # 真实浏览器拖拽 8 项（Chrome + CDP，没有 Chrome 自动跳过）
+node test/panel-mount-check.mjs  # 面板真实挂载 7 项（jsdom + React，确认拖拽实例真的挂上了）
 ```
 
 这些测试都**不需要启动 dsh**，直接跑。客户端测试需要能解析 `react` / `react-dom`（先从项目自身找，找不到则从 dsh profile 借）。

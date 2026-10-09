@@ -89,7 +89,7 @@ With `link:` your edits are live (refresh the page for client changes; restart f
      },
      "dependencies": {
        // ...
-       "@adamcjm/dsh-memo": "^0.2.7"                // ← add
+       "@adamcjm/dsh-memo": "^0.2.8"                // ← add
      }
    }
    ```
@@ -296,6 +296,7 @@ node test/ui-feedback-check.mjs  # UI details, 75 checks (incl. pinning and drag
 node test/tag-rules-check.mjs    # tag rules & edit round-trip, 52 checks (position / fidelity / host-client parity)
 node test/reorder-check.mjs      # ordering, 20 checks (done does not jump / drag persists / old-db migration)
 node test/drag-check.mjs         # real-browser drag, 8 checks (Chrome + CDP; skipped without Chrome)
+node test/panel-mount-check.mjs  # real panel mount, 7 checks (jsdom + React; proves the Sortable instance is attached)
 ```
 
 None of these need dsh running. The client tests need to resolve `react` / `react-dom` (they look in the project first, then borrow from a dsh profile).

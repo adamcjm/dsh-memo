@@ -170,6 +170,13 @@ console.log('\n[9] 拖拽排序（同一天分组内）')
   check('卡片带 data-id', /'data-id': it\.id/.test(css))
   check('拖完把新顺序提交给宿主', /call\('reorder', \{ ids: ids \}\)/.test(css))
   check('重排算法抽成了可测纯函数', /function applyGroupOrder\(list, ids\)/.test(css))
+  {
+    // 0.2.7 的坑：useEffect 写在 `var grouped = useMemo(...)` 之前，var 提升让依赖
+    // 恒为 undefined —— effect 只在首屏（列表为空）跑过一次，拖拽从未被接管。
+    const groupedIdx = css.indexOf('var grouped = useMemo')
+    const effectIdx = css.indexOf('}, [grouped, editId])')
+    check('★ 拖拽 effect 排在 grouped 定义之后', groupedIdx > 0 && effectIdx > groupedIdx, `grouped@${groupedIdx} effect@${effectIdx}`)
+  }
   check('host 提供 reorder 接口', /async reorder\(payload\)/.test(host))
   check('host 排序按 sort_order（不再按更新时间）', /ORDER BY m\.pinned DESC, m\.sort_order ASC/.test(host))
   check('host 有老库补列的迁移', /ALTER TABLE memo ADD COLUMN sort_order/.test(host))
