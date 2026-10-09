@@ -75,7 +75,8 @@ globalThis.document = {
   const run = new Function('window', 'document', 'fetch', code)
   run(globalThis.window, globalThis.document, () => { throw new Error('unexpected fetch during load') })
   check('bundle 执行后注册了 factory', !!registered)
-  check('注册 id 等于包名', registered?.id === 'dsh-memo', String(registered?.id))
+  const pkgName = JSON.parse(await readFile(join(HERE, '..', 'package.json'), 'utf8')).name
+  check('注册 id 等于包名', registered?.id === pkgName, `${String(registered?.id)} vs ${pkgName}`)
   check('注册时未产生副作用（无样式注入）', styleNodes.length === 0, `styles=${styleNodes.length}`)
 }
 
