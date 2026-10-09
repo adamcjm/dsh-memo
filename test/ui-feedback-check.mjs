@@ -110,6 +110,15 @@ console.log('\n[7] 编辑功能（卡片就地展开）')
   check('编辑态用专门的卡片样式', /\.dm-card\.editing\{/.test(css))
   check('编辑保存调用 removeAttachments', /removeAttachments: removed/.test(css))
   check('编辑保存显式传 tags（标签跟随正文）', /tags: extractTagsFrom\(editBody\)/.test(css))
+  // 存储层会把 #标签 从正文剥离，所以编辑时必须并回正文，否则看不到、一保存就丢标签
+  check('编辑时把已有标签并回正文', /setEditBody\(withTagsInBody\(item\.body/.test(css))
+  check('client 有 withTagsInBody', /function withTagsInBody\(body, tags\)/.test(css))
+  {
+    const host = await readFile(join(HERE, '..', 'lib', 'index.js'), 'utf8')
+    check('client 的标签正则已放宽（汉字/标点紧贴也识别）', css.includes('#([^\\s#]{1,24})'))
+    check('host 与 client 用同一条标签正则', host.includes('#([^\\s#]{1,24})'))
+    check('host 剥离标签时只删标签名本身（不吞后文）', /return pre \+ raw\.slice\(name\.length\)/.test(host))
+  }
   check('已有图片可逐张移除', /setEditKeep\(function \(list\)/.test(css))
   check('新增图片可逐张取消', /setEditNew\(function \(list\)/.test(css))
   check('支持 ⌘Enter 保存、Esc 取消', /e\.metaKey \|\| e\.ctrlKey/.test(css) && /e\.key === 'Escape'/.test(css))

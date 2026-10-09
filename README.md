@@ -87,7 +87,7 @@ With `link:` your edits are live (refresh the page for client changes; restart f
      },
      "dependencies": {
        // ...
-       "@adamcjm/dsh-memo": "^0.2.4"                // ← add
+       "@adamcjm/dsh-memo": "^0.2.5"                // ← add
      }
    }
    ```
@@ -128,6 +128,7 @@ Mr. Zhang wants a WeChat QR login entry on the login page; prototype due next We
 Hover a row and click **Edit** (the pencil); the row expands **in place** into an editor:
 
 - Change the body directly. The `#tags` in the body become the note's tags (remove a `#tag` from the body and the tag is removed too)
+- Opening the editor merges the note's existing tags back into the body as `#tags` — visible, and saved back as-is
 - Images can be removed one by one (the × on the thumbnail) or added at any time (paste / drag / multi-select)
 - `⌘Enter` saves, `Esc` cancels
 
@@ -148,6 +149,7 @@ Images are named by SHA-256 and stored in `attachments/`, so **pasting the same 
 Tags are **not fixed**. The defaults (`#requirement-change` `#todo` `#follow-up` `#idea` `#meeting`) are just starting suggestions:
 
 - Type `#customer-A` or `#MrZhang` in the body and save → the tag is created and attached to that note
+- Anywhere works: start, middle or end of the body (`buy milk#groceries`, `meeting,#work` also count); a tag name ends at whitespace or punctuation
 - The tag area is sorted by usage; click one to filter
 - A tag that no note uses anymore disappears on its own
 
@@ -280,10 +282,11 @@ cd dsh-memo
 
 node test/smoke.mjs              # host half, 64 checks: CRUD / tags / attachments / rebuild / snapshots / credentials
 node test/client-precheck.mjs    # client half, 22 checks: module protocol / slot registration / component rendering
-node test/ui-feedback-check.mjs  # UI details, 22 checks
+node test/ui-feedback-check.mjs  # UI details, 45 checks
+node test/tag-rules-check.mjs    # tag rules & edit round-trip, 52 checks (position / fidelity / host-client parity)
 ```
 
-None of the three need dsh running. The client tests need to resolve `react` / `react-dom` (they look in the project first, then borrow from a dsh profile).
+None of these need dsh running. The client tests need to resolve `react` / `react-dom` (they look in the project first, then borrow from a dsh profile).
 
 ### Layout
 
@@ -292,7 +295,7 @@ package.json        dsh.bundle.patch + dsh.client (platform: web)
 cordis.patch.yml    host plugin row: id: memo
 lib/index.js        host half: SQLite / attachments / Markdown source of truth / git sync / HTTP API
 lib/client.js       client half: window.__ModuleLoader__.load({id, factory}) + React UI
-test/               three independently runnable test files
+test/               independently runnable test files (host / client / UI / tag rules)
 ```
 
 ### Extension points

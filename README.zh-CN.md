@@ -87,7 +87,7 @@ dsh plugin --profile <你的 profile> add link:/path/to/dsh-memo
      },
      "dependencies": {
        // ...
-       "@adamcjm/dsh-memo": "^0.2.4"                // ← 追加
+       "@adamcjm/dsh-memo": "^0.2.5"                // ← 追加
      }
    }
    ```
@@ -128,6 +128,7 @@ dsh --profile <profile> --dump-config | grep -A3 "id: memo"
 鼠标移到条目上，点 **编辑**（铅笔图标），条目会**原地展开**成编辑区：
 
 - 直接改正文；正文里的 `#标签` 会同步为条目的标签（删掉正文里的标签，标签也就没了）
+- 打开编辑时，条目已有的标签会以 `#标签` 的形式并回正文末尾 —— 看得见，也存得回
 - 图片可逐张移除（缩略图右上角的 ×），也可随时新增（粘贴 / 拖拽 / 多选）
 - `⌘Enter` 保存，`Esc` 取消
 
@@ -148,6 +149,7 @@ dsh --profile <profile> --dump-config | grep -A3 "id: memo"
 标签**不是固定的**。默认的 `#需求变更` `#待办` `#跟进` `#灵感` `#会议` 只是起步建议：
 
 - 正文里打 `#客户A`、`#张总` 保存 → 自动创建该标签并挂到这条备忘上
+- 位置不限：开头、中间、末尾都行（`买牛奶#购物`、`开会，#工作` 也能识别）；标签名在空白或中英文标点处结束
 - 标签区按使用次数排序，点击即筛选
 - 某个标签再没有任何备忘在用时会自动隐藏
 
@@ -280,10 +282,11 @@ cd dsh-memo
 
 node test/smoke.mjs              # 宿主半侧 64 项：CRUD / 标签 / 附件 / 重建 / 快照 / 凭据
 node test/client-precheck.mjs    # 客户端 22 项：模块协议 / slot 注册 / 组件渲染
-node test/ui-feedback-check.mjs  # 界面细节 22 项
+node test/ui-feedback-check.mjs  # 界面细节 45 项
+node test/tag-rules-check.mjs    # 标签规则与编辑往返 52 项（位置 / 保真 / host-client 一致）
 ```
 
-三个测试都**不需要启动 dsh**，直接跑。客户端测试需要能解析 `react` / `react-dom`（先从项目自身找，找不到则从 dsh profile 借）。
+这些测试都**不需要启动 dsh**，直接跑。客户端测试需要能解析 `react` / `react-dom`（先从项目自身找，找不到则从 dsh profile 借）。
 
 ### 结构
 
@@ -292,7 +295,7 @@ package.json        dsh.bundle.patch + dsh.client（platform: web）
 cordis.patch.yml    宿主插件行：id: memo
 lib/index.js        宿主半侧：SQLite / 附件 / Markdown 事实源 / git 同步 / HTTP API
 lib/client.js       客户端半侧：window.__ModuleLoader__.load({id, factory}) + React UI
-test/               三个可独立运行的测试
+test/               可独立运行的测试（宿主 / 客户端 / 界面 / 标签规则）
 ```
 
 ### 扩展点
