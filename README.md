@@ -87,7 +87,7 @@ With `link:` your edits are live (refresh the page for client changes; restart f
      },
      "dependencies": {
        // ...
-       "@adamcjm/dsh-memo": "^0.2.1"                // ← add
+       "@adamcjm/dsh-memo": "^0.2.2"                // ← add
      }
    }
    ```
@@ -305,6 +305,7 @@ test/               three independently runnable test files
 
 - **Client (`lib/client.js`)**: refresh the page (the module system derives revisions from mtime / ctime / size and hot-swaps)
 - **Host (`lib/index.js`)**: **restart dsh** (host code loads at process start)
+- **`lib/client.js` rewritten exactly while dsh boots**: the client-side HMR watch can hot-swap the bundle while its first load is still in flight, so DSH ends up executing the same bundle twice. The bundle now tolerates its own duplicate registration (a second `duplicate factory registration` is ignored, because a registration already exists) instead of failing the whole web boot. Every other error is still rethrown
 
 ---
 

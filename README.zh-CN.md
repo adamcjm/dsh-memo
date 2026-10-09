@@ -87,7 +87,7 @@ dsh plugin --profile <你的 profile> add link:/path/to/dsh-memo
      },
      "dependencies": {
        // ...
-       "@adamcjm/dsh-memo": "^0.2.1"                // ← 追加
+       "@adamcjm/dsh-memo": "^0.2.2"                // ← 追加
      }
    }
    ```
@@ -305,6 +305,7 @@ test/               三个可独立运行的测试
 
 - **客户端（`lib/client.js`）**：刷新页面即可（模块系统按 mtime / ctime / size 派生 revision，支持热替换）
 - **宿主端（`lib/index.js`）**：必须**重启 dsh**（进程启动时才加载）
+- **`lib/client.js` 恰好在 dsh 启动瞬间被改写**：客户端 HMR 轮询可能在 bundle 首次加载尚未结束时热替换它，导致 DSH 把同一份脚本执行两次。bundle 现在容忍自身的重复注册（已存在注册时忽略第二次 `duplicate factory registration`），不会再让整个 web boot 失败；其它错误仍照常抛出
 
 ---
 
