@@ -130,5 +130,30 @@ console.log('\n[7] 编辑功能（卡片就地展开）')
   check('中英字典都有编辑文案', !!dict, dict ? dict[1] + ' / ' + dict[2] : '未找到')
 }
 
+console.log('\n[8] 置顶可见（卡片上有图钉标记）')
+{
+  const css = await readFile(join(HERE, '..', 'lib', 'client.js'), 'utf8')
+  check('卡片 class 带 pinned', /className: 'dm-card' \+ \(it\.done \? ' done' : ''\) \+ \(it\.pinned \? ' pinned' : ''\)/.test(css))
+  check('置顶项渲染图钉徽标', /it\.pinned \? h\('div', \{ className: 'dm-pinrow'/.test(css))
+  check('徽标里是图钉图标', /dm-pinrow[\s\S]{0,220}M12 17v5M9 3h6l-1 8 4 3H6l4-3z/.test(css))
+  check('卡片左侧有置顶色条', /\.dm-card\.pinned:before\{/.test(css))
+  check('置顶徽标用品牌色', /\.dm-pinrow\{[^}]*alias-brand-primary/.test(css))
+  check('置顶按钮已置顶时高亮', /className: 'dm-ib' \+ \(it\.pinned \? ' on' : ''\)/.test(css))
+  check('高亮样式存在', /\.dm-ib\.on\{[^}]*alias-brand-primary/.test(css))
+  check('已置顶时按钮提示变成「取消置顶」', /it\.pinned \? t\('card\.unpin'\) : t\('card\.pin'\)/.test(css))
+  const dict = css.match(/'card\.pin': '([^']+)'[\s\S]{0,200}?'card\.unpin': '([^']+)'/)
+  check('中英字典都有置顶文案', !!dict, dict ? dict[1] + ' / ' + dict[2] : '未找到')
+  const zhPinned = css.match(/'card\.pinned': '([^']+)'/)
+  check('有「已置顶」文案', !!zhPinned && zhPinned[1] === '已置顶', zhPinned ? zhPinned[1] : '')
+  const enUnpin = css.match(/'card\.pin': 'Pin',[\s\S]{0,160}?'card\.unpin': '([^']+)'/)
+  check('英文是 Unpin', !!enUnpin && enUnpin[1] === 'Unpin', enUnpin ? enUnpin[1] : '')
+  check('置顶排序在 host 侧（pinned 优先）', /ORDER BY m\.pinned DESC/.test(await readFile(join(HERE, '..', 'lib', 'index.js'), 'utf8')))
+  for (const f of ['demo.html', 'demo-en.html']) {
+    const demo = await readFile(join(HERE, '..', 'docs', f), 'utf8')
+    check(f + ' 演示了置顶卡片', /class="dm-card pinned"/.test(demo) && demo.includes('dm-pinrow'))
+    check(f + ' 含置顶样式', /\.dm-card\.pinned:before\{/.test(demo) && /\.dm-ib\.on\{/.test(demo))
+  }
+}
+
 console.log('\n' + pass + ' 通过 / ' + fail + ' 失败')
 process.exit(fail === 0 ? 0 : 1)

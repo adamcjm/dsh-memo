@@ -29,6 +29,7 @@
 | **Images & screenshots** | `⌘V` paste / drag-and-drop / file picker (multi-select); content-hash deduplicated, one copy per image |
 | **Editable** | Inline editing on the card — body and images both; tags follow the `#tags` in the body, images can be added/removed one by one |
 | **Tags** | Type `#anything` in the body and it is created automatically — not a fixed whitelist |
+| **Pinning** | Pinned notes sort first and show a pin badge plus a left accent bar on the card; the pin button lights up too |
 | **Search** | CJK-safe substring search plus `#tag` / `source:` / `after:` / `before:` / `has:image` / `is:open` qualifiers |
 | **Local storage** | `node:sqlite` (built into Node) — **zero external dependencies**, no native module compilation |
 | **GitHub sync** | Auto-pushes the text layer to a private repo (30s debounce), plus daily compact SQLite snapshots |
@@ -87,7 +88,7 @@ With `link:` your edits are live (refresh the page for client changes; restart f
      },
      "dependencies": {
        // ...
-       "@adamcjm/dsh-memo": "^0.2.5"                // ← add
+       "@adamcjm/dsh-memo": "^0.2.6"                // ← add
      }
    }
    ```
