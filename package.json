@@ -1,5 +1,5 @@
 {
-  "name": "dsh-memo",
+  "name": "@adamcjm/dsh-memo",
   "version": "0.2.0",
   "description": "Memo plugin for DeepSeek Harness: sidebar quick capture, local SQLite storage, private GitHub repo sync, and image/screenshot support.",
   "author": "adamcjm",

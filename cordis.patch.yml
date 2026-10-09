@@ -1,10 +1,10 @@
 # dsh-memo bundle patch — 单行插入到 profile 根。
 #
-# 安装：dsh plugin --profile desktop add link:~/.dsh/dev/dsh-memo
+# 安装：dsh plugin --profile <profile> add @adamcjm/dsh-memo
 # 之后重启 dsh web/desktop 生效（host 半侧代码在进程启动时加载）。
 - insert:
     - id: memo
-      name: 'dsh-memo'
+      name: '@adamcjm/dsh-memo'
       config:
         # 数据根目录（留空则用 ~/.dsh/memo）。它同时是同步用的 git 仓库。
         dataDir: ''

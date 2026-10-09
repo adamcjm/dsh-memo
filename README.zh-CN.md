@@ -44,15 +44,23 @@
 - 其内置 Node **≥ 22.5**（`node:sqlite` 的最低版本；dsh 的 Electron 通常自带 24.x）
 - 无第三方运行时依赖，不需要 `npm install`
 
-### 方式一：从 GitHub 安装
+### 方式一：从 npm 安装（推荐）
+
+```sh
+dsh plugin --profile <你的 profile> add @adamcjm/dsh-memo
+```
+
+`<你的 profile>` 是你的 dsh profile 名（如 `web`、`tui`）。安装后**重启 dsh** 生效。
+
+### 方式二：从 GitHub 安装
+
+固定到仓库默认分支的最新提交（而非已发布的版本）：
 
 ```sh
 dsh plugin --profile <你的 profile> add github:adamcjm/dsh-memo
 ```
 
-`<你的 profile>` 是你的 dsh profile 名（如 `web`、`tui`）。安装后**重启 dsh** 生效。
-
-### 方式二：本地开发安装
+### 方式三：本地开发安装
 
 ```sh
 git clone https://github.com/adamcjm/dsh-memo.git
@@ -61,7 +69,7 @@ dsh plugin --profile <你的 profile> add link:/path/to/dsh-memo
 
 `link:` 方式下改动即时可见（客户端改动刷新页面，宿主端改动需重启）。
 
-### 方式三：手动接入（desktop profile 专用）
+### 方式四：手动接入（desktop profile 专用）
 
 **`desktop` profile 由 dsh 桌面应用独占管理，CLI 会拒绝写入**（报 `profile "desktop" is managed exclusively by the Electron application`）。这类 profile 需要手动接入：
 
@@ -73,13 +81,13 @@ dsh plugin --profile <你的 profile> add link:/path/to/dsh-memo
        "profile": {
          "bundles": [
            // ... 已有的 bundle ...
-           "dsh-memo"                                // ← 追加
+           "@adamcjm/dsh-memo"                       // ← 追加
          ]
        }
      },
      "dependencies": {
        // ...
-       "dsh-memo": "link:/绝对路径/到/dsh-memo"      // ← 追加
+       "@adamcjm/dsh-memo": "^0.2.0"                // ← 追加
      }
    }
    ```
@@ -243,12 +251,12 @@ SQLite 在 git 里是一个**不可 merge 的二进制**：两台设备各改一
 ### 通过 CLI 安装的
 
 ```sh
-dsh plugin --profile <你的 profile> remove dsh-memo
+dsh plugin --profile <你的 profile> remove @adamcjm/dsh-memo
 ```
 
 ### 手动接入的（desktop profile）
 
-1. 编辑 `~/.dsh/profiles/desktop/package.json`，从 `dsh.profile.bundles` 与 `dependencies` 中删除 `dsh-memo` 两项
+1. 编辑 `~/.dsh/profiles/desktop/package.json`，从 `dsh.profile.bundles` 与 `dependencies` 中删除 `@adamcjm/dsh-memo` 两项
 2. `cd ~/.dsh/profiles/desktop && pnpm install`
 3. 重启 DeepSeek Harness
 

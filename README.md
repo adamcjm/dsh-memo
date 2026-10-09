@@ -44,15 +44,23 @@
 - Its bundled Node **≥ 22.5** (the minimum for `node:sqlite`; dsh's Electron usually ships 24.x)
 - No third-party runtime dependencies, no `npm install` needed
 
-### Option 1: Install from GitHub
+### Option 1: Install from npm (recommended)
+
+```sh
+dsh plugin --profile <your-profile> add @adamcjm/dsh-memo
+```
+
+`<your-profile>` is your dsh profile name (e.g. `web`, `tui`). **Restart dsh** afterwards.
+
+### Option 2: Install from GitHub
+
+Pins to the repository's default-branch HEAD instead of a published release:
 
 ```sh
 dsh plugin --profile <your-profile> add github:adamcjm/dsh-memo
 ```
 
-`<your-profile>` is your dsh profile name (e.g. `web`, `tui`). **Restart dsh** afterwards.
-
-### Option 2: Install for local development
+### Option 3: Install for local development
 
 ```sh
 git clone https://github.com/adamcjm/dsh-memo.git
@@ -61,7 +69,7 @@ dsh plugin --profile <your-profile> add link:/path/to/dsh-memo
 
 With `link:` your edits are live (refresh the page for client changes; restart for host changes).
 
-### Option 3: Manual wiring (desktop profile only)
+### Option 4: Manual wiring (desktop profile only)
 
 **The `desktop` profile is owned exclusively by the dsh desktop app and the CLI refuses to write to it** (it reports `profile "desktop" is managed exclusively by the Electron application`). Wire it manually:
 
@@ -73,13 +81,13 @@ With `link:` your edits are live (refresh the page for client changes; restart f
        "profile": {
          "bundles": [
            // ... existing bundles ...
-           "dsh-memo"                                // ← add
+           "@adamcjm/dsh-memo"                       // ← add
          ]
        }
      },
      "dependencies": {
        // ...
-       "dsh-memo": "link:/absolute/path/to/dsh-memo" // ← add
+       "@adamcjm/dsh-memo": "^0.2.0"                // ← add
      }
    }
    ```
@@ -243,12 +251,12 @@ Delete `memo.db*` and restart dsh (or call the `rebuild` API). The plugin scans 
 ### If installed via the CLI
 
 ```sh
-dsh plugin --profile <your-profile> remove dsh-memo
+dsh plugin --profile <your-profile> remove @adamcjm/dsh-memo
 ```
 
 ### If wired manually (desktop profile)
 
-1. Edit `~/.dsh/profiles/desktop/package.json` and remove the two `dsh-memo` entries from `dsh.profile.bundles` and `dependencies`
+1. Edit `~/.dsh/profiles/desktop/package.json` and remove the two `@adamcjm/dsh-memo` entries from `dsh.profile.bundles` and `dependencies`
 2. `cd ~/.dsh/profiles/desktop && pnpm install`
 3. Restart DeepSeek Harness
 
