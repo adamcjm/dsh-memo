@@ -87,7 +87,7 @@ dsh plugin --profile <你的 profile> add link:/path/to/dsh-memo
      },
      "dependencies": {
        // ...
-       "@adamcjm/dsh-memo": "^0.2.0"                // ← 追加
+       "@adamcjm/dsh-memo": "^0.2.1"                // ← 追加
      }
    }
    ```
