@@ -27,6 +27,7 @@
 | **Sidebar entry** | Bottom-rail icon next to Settings, with an open-items badge; click to switch to the memo panel |
 | **Quick capture** | Always-present input at the top of the panel; `Enter` saves; the box is drag-resizable |
 | **Images & screenshots** | `⌘V` paste / drag-and-drop / file picker (multi-select); content-hash deduplicated, one copy per image |
+| **Editable** | Inline editing on the card — body and images both; tags follow the `#tags` in the body, images can be added/removed one by one |
 | **Tags** | Type `#anything` in the body and it is created automatically — not a fixed whitelist |
 | **Search** | CJK-safe substring search plus `#tag` / `source:` / `after:` / `before:` / `has:image` / `is:open` qualifiers |
 | **Local storage** | `node:sqlite` (built into Node) — **zero external dependencies**, no native module compilation |
@@ -113,6 +114,16 @@ Mr. Zhang wants a WeChat QR login entry on the login page; prototype due next We
 ```
 
 `#requirement-change` and `#login` become tags automatically, and the tag markers are stripped from the body.
+
+### Editing a note
+
+Hover a row and click **Edit** (the pencil); the row expands **in place** into an editor:
+
+- Change the body directly. The `#tags` in the body become the note's tags (remove a `#tag` from the body and the tag is removed too)
+- Images can be removed one by one (the × on the thumbnail) or added at any time (paste / drag / multi-select)
+- `⌘Enter` saves, `Esc` cancels
+
+Saving regenerates the `.md` source of truth, bumps `rev`, and syncs to GitHub within 30 seconds.
 
 ### Adding images / screenshots
 

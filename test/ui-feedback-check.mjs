@@ -100,5 +100,26 @@ console.log('\n[6] 根容器必须自己能撑满（真机回归）')
   check('演示页没有替插件兜底 flex/width', !/\.page > \.dm-wrap\{/.test(demo))
 }
 
+
+console.log('\n[7] 编辑功能（卡片就地展开）')
+{
+  const css = await readFile(join(HERE, '..', 'lib', 'client.js'), 'utf8')
+  check('卡片操作区有「编辑」按钮', /title: t\('card.edit'\)/.test(css) && /onClick: function \(\) \{ startEdit\(it\) \}/.test(css))
+  check('编辑按钮带铅笔图标', /M16\.5 3\.5a2\.1 2\.1 0 0 1 3 3L7 19l-4 1 1-4z/.test(css))
+  check('有就地展开的编辑容器', /\.dm-edit\{/.test(css) && /\.dm-edit-ta\{/.test(css))
+  check('编辑态用专门的卡片样式', /\.dm-card\.editing\{/.test(css))
+  check('编辑保存调用 removeAttachments', /removeAttachments: removed/.test(css))
+  check('编辑保存显式传 tags（标签跟随正文）', /tags: extractTagsFrom\(editBody\)/.test(css))
+  check('已有图片可逐张移除', /setEditKeep\(function \(list\)/.test(css))
+  check('新增图片可逐张取消', /setEditNew\(function \(list\)/.test(css))
+  check('支持 ⌘Enter 保存、Esc 取消', /e\.metaKey \|\| e\.ctrlKey/.test(css) && /e\.key === 'Escape'/.test(css))
+  check('编辑态也能粘贴图片', /addEditFiles\(files\)/.test(css))
+  // 不做双击手势（用户明确不要）
+  check('没有绑定双击行为（按要求）', !/onDoubleClick|dblclick/.test(css))
+  // 字典齐备
+  const dict = css.match(/'card\.edit': '([^']+)'[\s\S]{0,400}?'edit\.hint': '([^']+)'/)
+  check('中英字典都有编辑文案', !!dict, dict ? dict[1] + ' / ' + dict[2] : '未找到')
+}
+
 console.log('\n' + pass + ' 通过 / ' + fail + ' 失败')
 process.exit(fail === 0 ? 0 : 1)
