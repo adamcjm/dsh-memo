@@ -89,7 +89,7 @@ dsh plugin --profile <你的 profile> add link:/path/to/dsh-memo
      },
      "dependencies": {
        // ...
-       "@adamcjm/dsh-memo": "^0.2.9"                // ← 追加
+       "@adamcjm/dsh-memo": "^0.2.10"                // ← 追加
      }
    }
    ```
@@ -290,16 +290,21 @@ rm -rf ~/.dsh/memo          # 本地数据（含凭据）
 git clone https://github.com/adamcjm/dsh-memo.git
 cd dsh-memo
 
-node test/smoke.mjs              # 宿主半侧 64 项：CRUD / 标签 / 附件 / 重建 / 快照 / 凭据
-node test/client-precheck.mjs    # 客户端 22 项：模块协议 / slot 注册 / 组件渲染
-node test/ui-feedback-check.mjs  # 界面细节 75 项（含置顶、拖拽接线）
-node test/tag-rules-check.mjs    # 标签规则与编辑往返 52 项（位置 / 保真 / host-client 一致）
-node test/reorder-check.mjs      # 顺序语义 20 项（完成不跳位 / 拖拽持久化 / 老库迁移）
-node test/drag-check.mjs         # 真实浏览器拖拽 8 项（Chrome + CDP，没有 Chrome 自动跳过）
-node test/panel-mount-check.mjs  # 面板真实挂载 7 项（jsdom + React，确认拖拽实例真的挂上了）
+node test/smoke.mjs                    # 宿主半侧 64 项：CRUD / 标签 / 附件 / 重建 / 快照 / 凭据
+node test/client-precheck.mjs          # 客户端 25 项：模块协议 / slot 注册 / 组件渲染
+node test/ui-feedback-check.mjs        # 界面细节 80 项（含置顶、拖拽接线）
+node test/edit-interaction-check.mjs   # 主题前景色 + 编辑态可点 15 项（jsdom + React 真实挂载）
+node test/tag-rules-check.mjs          # 标签规则与编辑往返 52 项（位置 / 保真 / host-client 一致）
+node test/edit-check.mjs               # 编辑与图片引用计数 29 项
+node test/reorder-check.mjs            # 顺序语义 20 项（完成不跳位 / 拖拽持久化 / 老库迁移）
+node test/drag-check.mjs               # 真实浏览器拖拽 12 项（Chrome + CDP，没有 Chrome 自动跳过）
+node test/panel-mount-check.mjs        # 面板真实挂载 7 项（jsdom + React，确认拖拽实例真的挂上了）
+node test/i18n-check.mjs               # 国际化 22 项（中英切换 / 缺词兜底）
+node test/config-check.mjs             # 同步配置 18 项
+node test/hot-swap-check.mjs           # 热替换 9 项
 ```
 
-这些测试都**不需要启动 dsh**，直接跑。客户端测试需要能解析 `react` / `react-dom`（先从项目自身找，找不到则从 dsh profile 借）。
+这些测试都**不需要启动 dsh**，直接跑。客户端测试需要能解析 `react` / `react-dom`（先从项目自身找，找不到则从 dsh profile 借）；两个真实挂载测试还需要 `jsdom`（`npm i` 会作为 devDependency 装上，缺失时自动跳过）。
 
 ### 结构
 

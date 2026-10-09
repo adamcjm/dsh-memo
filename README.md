@@ -89,7 +89,7 @@ With `link:` your edits are live (refresh the page for client changes; restart f
      },
      "dependencies": {
        // ...
-       "@adamcjm/dsh-memo": "^0.2.9"                // ← add
+       "@adamcjm/dsh-memo": "^0.2.10"                // ← add
      }
    }
    ```
@@ -290,16 +290,21 @@ If you synced to GitHub, the remote repository (e.g. `yourname/dsh-memo-data`) i
 git clone https://github.com/adamcjm/dsh-memo.git
 cd dsh-memo
 
-node test/smoke.mjs              # host half, 64 checks: CRUD / tags / attachments / rebuild / snapshots / credentials
-node test/client-precheck.mjs    # client half, 22 checks: module protocol / slot registration / component rendering
-node test/ui-feedback-check.mjs  # UI details, 75 checks (incl. pinning and drag wiring)
-node test/tag-rules-check.mjs    # tag rules & edit round-trip, 52 checks (position / fidelity / host-client parity)
-node test/reorder-check.mjs      # ordering, 20 checks (done does not jump / drag persists / old-db migration)
-node test/drag-check.mjs         # real-browser drag, 8 checks (Chrome + CDP; skipped without Chrome)
-node test/panel-mount-check.mjs  # real panel mount, 7 checks (jsdom + React; proves the Sortable instance is attached)
+node test/smoke.mjs                    # host half, 64 checks: CRUD / tags / attachments / rebuild / snapshots / credentials
+node test/client-precheck.mjs          # client half, 25 checks: module protocol / slot registration / component rendering
+node test/ui-feedback-check.mjs        # UI details, 80 checks (incl. pinning and drag wiring)
+node test/edit-interaction-check.mjs   # theme foreground + clickable edit area, 15 checks (real mount via jsdom + React)
+node test/tag-rules-check.mjs          # tag rules & edit round-trip, 52 checks (position / fidelity / host-client parity)
+node test/edit-check.mjs               # editing & image refcounting, 29 checks
+node test/reorder-check.mjs            # ordering, 20 checks (done does not jump / drag persists / old-db migration)
+node test/drag-check.mjs               # real-browser drag, 12 checks (Chrome + CDP; skipped without Chrome)
+node test/panel-mount-check.mjs        # real panel mount, 7 checks (jsdom + React; proves the Sortable instance is attached)
+node test/i18n-check.mjs               # i18n, 22 checks (zh/en switching, missing-key fallback)
+node test/config-check.mjs             # sync config, 18 checks
+node test/hot-swap-check.mjs           # hot swap, 9 checks
 ```
 
-None of these need dsh running. The client tests need to resolve `react` / `react-dom` (they look in the project first, then borrow from a dsh profile).
+None of these need dsh running. The client tests need to resolve `react` / `react-dom` (they look in the project first, then borrow from a dsh profile); the two real-mount tests also need `jsdom` (installed as a devDependency by `npm i`, skipped when absent).
 
 ### Layout
 
