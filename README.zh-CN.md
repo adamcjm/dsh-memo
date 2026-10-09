@@ -168,6 +168,18 @@ dsh --profile <profile> --dump-config | grep -A3 "id: memo"
 - **自动同步**：任何改动后 30 秒自动提交并推送；自动同步失败也会弹通知
 - **状态显示**：面板头部显示「已同步 / 待同步 / 仅本地 / 同步异常」
 
+### 仓库设置存在哪
+
+优先级从高到低，三层兜底：
+
+| 层 | 位置 | 说明 |
+|---|---|---|
+| ① | `~/.dsh/memo/.config.json` | 在插件设置界面里保存的，**重启后仍然生效** |
+| ② | 插件配置 `cordis.patch.yml` 的 `config.repo` | 部署时的默认值 |
+| ③ | `~/.dsh/memo/.git/config` 的 `remote.origin.url` | 目录里已有的 git 痕迹（手动 `git remote add` 过也能认出来） |
+
+三层都查不到才会显示「未配置」。面板头部同步状态的 tooltip 会写明当前用的是哪一层（`runtime` / `config` / `git-remote`）。
+
 令牌存储优先级（都不会进入仓库）：
 
 1. 设置界面写入 `~/.dsh/memo/.token`（权限 `0600`）
@@ -190,6 +202,7 @@ dsh --profile <profile> --dump-config | grep -A3 "id: memo"
 ├── log/2026-10.jsonl        # 追加式操作日志（.gitattributes 配了 merge=union）
 ├── snapshots/memo-YYYY-MM-DD.sqlite     # 每日紧凑快照，保留最近 7 份
 ├── .token                   # 凭据（0600，git 忽略）
+├── .config.json            # 远程仓库设置（设置界面里保存的，随仓库一起同步）
 ├── .gitignore
 └── .gitattributes
 ```

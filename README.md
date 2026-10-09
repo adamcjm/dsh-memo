@@ -168,6 +168,18 @@ After that:
 - **Auto sync** — every change is committed and pushed 30 seconds later; failures also raise a notification
 - **Status** — the panel header shows "Synced / Pending / Local only / Sync error"
 
+### Where the repository setting lives
+
+Three layers, resolved in order:
+
+| # | Location | Notes |
+|---|---|---|
+| ① | `~/.dsh/memo/.config.json` | Saved from the plugin's settings dialog — **survives restarts** |
+| ② | Plugin config `config.repo` in `cordis.patch.yml` | Deployment-time default |
+| ③ | `remote.origin.url` in `~/.dsh/memo/.git/config` | Existing git trace (a manual `git remote add` counts) |
+
+Only when all three miss does the panel say "not configured". The sync-badge tooltip reports which layer is in use (`runtime` / `config` / `git-remote`).
+
 Token lookup order (none of them ever enter the repository):
 
 1. The settings dialog writes `~/.dsh/memo/.token` (mode `0600`)
@@ -190,6 +202,7 @@ The data root is `~/.dsh/memo/`, which is itself a git repository:
 ├── log/2026-10.jsonl        # append-only action log (.gitattributes sets merge=union)
 ├── snapshots/memo-YYYY-MM-DD.sqlite     # daily compact snapshot, 7 kept
 ├── .token                   # credentials (0600, git-ignored)
+├── .config.json            # remote repository setting (saved from the UI, synced too)
 ├── .gitignore
 └── .gitattributes
 ```
