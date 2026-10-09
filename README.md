@@ -89,7 +89,7 @@ With `link:` your edits are live (refresh the page for client changes; restart f
      },
      "dependencies": {
        // ...
-       "@adamcjm/dsh-memo": "^0.2.8"                // ← add
+       "@adamcjm/dsh-memo": "^0.2.9"                // ← add
      }
    }
    ```

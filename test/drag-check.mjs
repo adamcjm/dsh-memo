@@ -32,8 +32,9 @@ body{margin:0;font:13px/1.6 system-ui;background:#14161a;color:#e9ebee}
 .dm-day{padding:13px 2px 7px;font-size:11px;color:#9ba1a8}
 .dm-card{padding:10px 12px;border-radius:10px;border:1px solid transparent;margin-bottom:3px}
 .dm-cards .dm-card{cursor:grab}
-.dm-drag-ghost{opacity:.4}
-.dm-drag-chosen{box-shadow:0 14px 34px rgba(0,0,0,.45)}
+.dm-card.dm-drag-ghost{border:1px dashed #5a6070;background:transparent}
+.dm-drag-ghost>*{visibility:hidden}
+.dm-card.dm-drag-fallback{box-shadow:0 14px 34px rgba(0,0,0,.4);border:1px solid #4d6bfe}
 </style></head><body>
 <div class="dm-list">
   <div class="dm-group"><div class="dm-day">今天</div>
@@ -60,6 +61,7 @@ body{margin:0;font:13px/1.6 system-ui;background:#14161a;color:#e9ebee}
     Sortable.create(document.getElementById(id), {
       animation: 190, easing: 'cubic-bezier(.2,.7,.3,1)',
       draggable: '.dm-card', filter: '.dm-cb, .dm-act, .dm-card.editing', preventOnFilter: true,
+      forceFallback: true, fallbackOnBody: true, fallbackClass: 'dm-drag-fallback',
       ghostClass: 'dm-drag-ghost', chosenClass: 'dm-drag-chosen',
       group: { name: 'dm-day-' + id, pull: false, put: false },
       onStart: function () { window.__events.push('start') },
@@ -122,7 +124,7 @@ try {
   const rect = (id) => evalJs(`(function(){ var b=document.querySelector('[data-id="${id}"]').getBoundingClientRect();
     return { x: b.left + b.width/2, y: b.top + b.height/2, top: b.top, bottom: b.bottom } })()`)
 
-  async function drag(from, to, onHold) {
+  async function drag(from, to, onHold, onStep) {
     await send('Input.dispatchMouseEvent', { type: 'mousePressed', x: from.x, y: from.y, button: 'left', buttons: 1, clickCount: 1 })
     await sleep(60)
     for (let i = 1; i <= 10; i++) {
@@ -132,6 +134,7 @@ try {
         y: from.y + ((to.y - from.y) * i) / 10,
       })
       await sleep(25)
+      if (onStep) await onStep(i)
     }
     await sleep(70)
     if (onHold) await onHold()
@@ -150,14 +153,29 @@ try {
   console.log('真实浏览器拖拽（Chrome + CDP）\n')
   const a0 = await rect('a'), d0 = await rect('d')
   let held = null
+  const ghostPerStep = []
   await drag(a0, { x: d0.x, y: d0.bottom + 10 }, async () => {
-    held = await evalJs(`({ ghost: !!document.querySelector('.dm-drag-ghost'), chosen: !!document.querySelector('.dm-drag-chosen') })`)
-  })
+    held = await evalJs(`(function(){
+      var g = document.querySelector('.dm-drag-ghost')
+      var f = document.querySelector('.dm-drag-fallback')
+      return {
+        ghost: !!g, ghostId: g ? g.getAttribute('data-id') : '', ghostTop: g ? Math.round(g.getBoundingClientRect().top) : -1,
+        chosen: !!document.querySelector('.dm-drag-chosen'),
+        ghostInList: g ? !!g.closest('.dm-cards') : false,
+        clone: !!f, cloneTop: f ? Math.round(f.getBoundingClientRect().top) : -1,
+        cloneInBody: f ? f.parentElement === document.body : false
+      }
+    })()`)
+  }, async () => { ghostPerStep.push(await evalJs("!!document.querySelector('.dm-drag-ghost')")) })
   const after1 = await evalJs('window.__order()')
   check('同组下移：A 移到最后', JSON.stringify(after1.today) === JSON.stringify(['b', 'c', 'd', 'a']), JSON.stringify(after1.today))
   check('其它日期分组不受影响', JSON.stringify(after1.yesterday) === JSON.stringify(['x', 'y']), JSON.stringify(after1.yesterday))
-  check('拖动中出现原位占位 ghost', held && held.ghost === true, JSON.stringify(held))
-  check('拖动中被拖元素带 chosen 样式', held && held.chosen === true, JSON.stringify(held))
+  check('★ 虚线指示是列表内的占位元素（不是浮层）', held && held.ghost === true && held.ghostInList === true, JSON.stringify(held))
+  check('★ 拖动全程虚线指示都在（逐步采样）', ghostPerStep.length >= 8 && ghostPerStep.every(Boolean), ghostPerStep.join(','))
+  check('跟随指针的是独立克隆（fallback 模式）', held && held.clone === true, JSON.stringify(held))
+  check('克隆挂在 body 上（不会被列表 overflow 裁掉）', held && held.cloneInBody === true, JSON.stringify(held))
+  check('虚线指示与跟随克隆是两个不同位置', held && held.ghostTop !== held.cloneTop, JSON.stringify(held))
+  check('被拖起元素带 chosen 样式', held && held.chosen === true, JSON.stringify(held))
   check('拖拽结束触发 onEnd', (await evalJs('window.__events.some(function(e){return e.indexOf("end:g-today")===0})')) === true, JSON.stringify(await evalJs('window.__events')))
 
   const b1 = await rect('b'), y1 = await rect('y')
