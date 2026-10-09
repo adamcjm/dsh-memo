@@ -30,6 +30,7 @@
 | **Editable** | Inline editing on the card — body and images both; tags follow the `#tags` in the body, images can be added/removed one by one |
 | **Tags** | Type `#anything` in the body and it is created automatically — not a fixed whitelist |
 | **Pinning** | Pinned notes sort first and show a pin badge plus a left accent bar on the card; the pin button lights up too |
+| **Drag & drop** | Hold and drag a card to reorder it within the same day group, with transition animation (inlined SortableJS) |
 | **Search** | CJK-safe substring search plus `#tag` / `source:` / `after:` / `before:` / `has:image` / `is:open` qualifiers |
 | **Local storage** | `node:sqlite` (built into Node) — **zero external dependencies**, no native module compilation |
 | **GitHub sync** | Auto-pushes the text layer to a private repo (30s debounce), plus daily compact SQLite snapshots |
@@ -88,7 +89,7 @@ With `link:` your edits are live (refresh the page for client changes; restart f
      },
      "dependencies": {
        // ...
-       "@adamcjm/dsh-memo": "^0.2.6"                // ← add
+       "@adamcjm/dsh-memo": "^0.2.7"                // ← add
      }
    }
    ```
@@ -134,6 +135,14 @@ Hover a row and click **Edit** (the pencil); the row expands **in place** into a
 - `⌘Enter` saves, `Esc` cancels
 
 Saving regenerates the `.md` source of truth, bumps `rev`, and syncs to GitHub within 30 seconds.
+
+### Reordering
+
+Within one day group, hold a card and drag it to change the order:
+
+- The new order saves on drop and is written to the `.md` source of truth as `order:`, so it survives syncing to another machine
+- **You cannot drag across day groups** (a "today" card will not drop into "yesterday"); use **Pinning** to lift something across days
+- Order is decided only by dragging and pinning: marking done / undone or editing the body no longer bounces an item to the top
 
 ### Adding images / screenshots
 
@@ -283,8 +292,10 @@ cd dsh-memo
 
 node test/smoke.mjs              # host half, 64 checks: CRUD / tags / attachments / rebuild / snapshots / credentials
 node test/client-precheck.mjs    # client half, 22 checks: module protocol / slot registration / component rendering
-node test/ui-feedback-check.mjs  # UI details, 45 checks
+node test/ui-feedback-check.mjs  # UI details, 75 checks (incl. pinning and drag wiring)
 node test/tag-rules-check.mjs    # tag rules & edit round-trip, 52 checks (position / fidelity / host-client parity)
+node test/reorder-check.mjs      # ordering, 20 checks (done does not jump / drag persists / old-db migration)
+node test/drag-check.mjs         # real-browser drag, 8 checks (Chrome + CDP; skipped without Chrome)
 ```
 
 None of these need dsh running. The client tests need to resolve `react` / `react-dom` (they look in the project first, then borrow from a dsh profile).
@@ -296,6 +307,7 @@ package.json        dsh.bundle.patch + dsh.client (platform: web)
 cordis.patch.yml    host plugin row: id: memo
 lib/index.js        host half: SQLite / attachments / Markdown source of truth / git sync / HTTP API
 lib/client.js       client half: window.__ModuleLoader__.load({id, factory}) + React UI
+                    (SortableJS 1.15.7 — MIT — is inlined here for drag-and-drop reordering)
 test/               independently runnable test files (host / client / UI / tag rules)
 ```
 

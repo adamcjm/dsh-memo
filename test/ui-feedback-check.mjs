@@ -155,5 +155,25 @@ console.log('\n[8] 置顶可见（卡片上有图钉标记）')
   }
 }
 
+console.log('\n[9] 拖拽排序（同一天分组内）')
+{
+  const css = await readFile(join(HERE, '..', 'lib', 'client.js'), 'utf8')
+  const host = await readFile(join(HERE, '..', 'lib', 'index.js'), 'utf8')
+  check('内联了 SortableJS 1.15.7', /\*! Sortable 1\.15\.7/.test(css))
+  check('懒加载（不在模块求值时探测 DOM）', /function getSortable\(\)/.test(css) && /var SortableLib = null/.test(css))
+  check('用局部 module/exports 走 CommonJS 分支', /var mod = \{ exports: \{\} \}/.test(css))
+  check('按日期分组渲染出可拖容器', /className: 'dm-cards'/.test(css) && /className: 'dm-group'/.test(css))
+  check('每组一个实例且禁止跨组', /group: \{ name: 'dm-day-' \+ dayK, pull: false, put: false \}/.test(css))
+  check('位移过渡动画已配置', /animation: 190/.test(css) && /easing: 'cubic-bezier/.test(css))
+  check('拖动不误触按钮与编辑态', /filter: '\.dm-cb, \.dm-act, \.dm-card\.editing'/.test(css))
+  check('拖动动画样式齐备', /\.dm-drag-ghost\{/.test(css) && /\.dm-drag-chosen\{/.test(css) && /\.dm-cards \.dm-card\{cursor:grab\}/.test(css))
+  check('卡片带 data-id', /'data-id': it\.id/.test(css))
+  check('拖完把新顺序提交给宿主', /call\('reorder', \{ ids: ids \}\)/.test(css))
+  check('重排算法抽成了可测纯函数', /function applyGroupOrder\(list, ids\)/.test(css))
+  check('host 提供 reorder 接口', /async reorder\(payload\)/.test(host))
+  check('host 排序按 sort_order（不再按更新时间）', /ORDER BY m\.pinned DESC, m\.sort_order ASC/.test(host))
+  check('host 有老库补列的迁移', /ALTER TABLE memo ADD COLUMN sort_order/.test(host))
+}
+
 console.log('\n' + pass + ' 通过 / ' + fail + ' 失败')
 process.exit(fail === 0 ? 0 : 1)

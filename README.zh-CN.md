@@ -30,6 +30,7 @@
 | **可编辑** | 卡片就地展开编辑，正文与图片都能改；标签跟随正文里的 `#标签`，图片可逐张增删 |
 | **标签** | 正文里打 `#任意名字` 保存即自动创建，不是固定白名单 |
 | **置顶** | 置顶项排在列表最前，卡片上有图钉徽标 + 左侧色条，置顶按钮同步高亮 |
+| **拖拽排序** | 同一天分组内按住卡片拖动即可调整先后，带位移过渡动画（内联 SortableJS） |
 | **检索** | 中文子串搜索 + `#标签` / `来源:` / `after:` / `before:` / `has:图片` / `is:未完成` 限定词 |
 | **本地存储** | `node:sqlite`（Node 内置），**零外部依赖**，无原生模块编译 |
 | **GitHub 同步** | 文本层自动推送到私有仓库（变更后 30 秒防抖），含每日 SQLite 紧凑快照 |
@@ -88,7 +89,7 @@ dsh plugin --profile <你的 profile> add link:/path/to/dsh-memo
      },
      "dependencies": {
        // ...
-       "@adamcjm/dsh-memo": "^0.2.6"                // ← 追加
+       "@adamcjm/dsh-memo": "^0.2.7"                // ← 追加
      }
    }
    ```
@@ -134,6 +135,14 @@ dsh --profile <profile> --dump-config | grep -A3 "id: memo"
 - `⌘Enter` 保存，`Esc` 取消
 
 保存后事实源 `.md` 会重新生成、`rev` 递增，30 秒内自动同步到 GitHub。
+
+### 调整顺序
+
+同一天分组内，按住卡片直接拖动即可调整先后：
+
+- 松手即保存，并写进事实源 `.md` 的 `order:` 字段，换设备同步后顺序不变
+- **跨日期分组拖不过去**（「今天」的卡片拖不进「昨天」）；跨天想提前就用**置顶**
+- 顺序只由拖拽和置顶决定：标记完成 / 取消完成、改正文都不会再把条目弹到顶部
 
 ### 加图片 / 截图
 
@@ -283,8 +292,10 @@ cd dsh-memo
 
 node test/smoke.mjs              # 宿主半侧 64 项：CRUD / 标签 / 附件 / 重建 / 快照 / 凭据
 node test/client-precheck.mjs    # 客户端 22 项：模块协议 / slot 注册 / 组件渲染
-node test/ui-feedback-check.mjs  # 界面细节 45 项
+node test/ui-feedback-check.mjs  # 界面细节 75 项（含置顶、拖拽接线）
 node test/tag-rules-check.mjs    # 标签规则与编辑往返 52 项（位置 / 保真 / host-client 一致）
+node test/reorder-check.mjs      # 顺序语义 20 项（完成不跳位 / 拖拽持久化 / 老库迁移）
+node test/drag-check.mjs         # 真实浏览器拖拽 8 项（Chrome + CDP，没有 Chrome 自动跳过）
 ```
 
 这些测试都**不需要启动 dsh**，直接跑。客户端测试需要能解析 `react` / `react-dom`（先从项目自身找，找不到则从 dsh profile 借）。
@@ -296,6 +307,7 @@ package.json        dsh.bundle.patch + dsh.client（platform: web）
 cordis.patch.yml    宿主插件行：id: memo
 lib/index.js        宿主半侧：SQLite / 附件 / Markdown 事实源 / git 同步 / HTTP API
 lib/client.js       客户端半侧：window.__ModuleLoader__.load({id, factory}) + React UI
+                    （其中原样内联了 SortableJS 1.15.7 —— MIT，拖拽排序用）
 test/               可独立运行的测试（宿主 / 客户端 / 界面 / 标签规则）
 ```
 
