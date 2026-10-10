@@ -31,6 +31,7 @@
 | **标签** | 正文里打 `#任意名字` 保存即自动创建，不是固定白名单 |
 | **置顶** | 置顶项排在列表最前，卡片上有图钉徽标 + 左侧色条，置顶按钮同步高亮 |
 | **拖拽排序** | 同一天分组内按住卡片拖动即可调整先后，带位移过渡动画（内联 SortableJS） |
+| **正序 / 倒序** | 「置顶」右侧一个按钮切换日期方向：倒序=今天在最上，正序=最早的日期在最上；只切日期维度，同一天内的顺序原样不动，选择本地记住 |
 | **检索** | 中文子串搜索 + `#标签` / `来源:` / `after:` / `before:` / `has:图片` / `is:未完成` 限定词 |
 | **本地存储** | `node:sqlite`（Node 内置），**零外部依赖**，无原生模块编译 |
 | **GitHub 同步** | 文本层自动推送到私有仓库（变更后 30 秒防抖），含每日 SQLite 紧凑快照 |
@@ -89,7 +90,7 @@ dsh plugin --profile <你的 profile> add link:/path/to/dsh-memo
      },
      "dependencies": {
        // ...
-       "@adamcjm/dsh-memo": "^0.2.10"                // ← 追加
+       "@adamcjm/dsh-memo": "^0.2.11"                // ← 追加
      }
    }
    ```
@@ -137,6 +138,17 @@ dsh --profile <profile> --dump-config | grep -A3 "id: memo"
 保存后事实源 `.md` 会重新生成、`rev` 递增，30 秒内自动同步到 GitHub。
 
 ### 调整顺序
+
+**日期维度：正序 / 倒序**
+
+筛选行「置顶」右侧有一个排序按钮，文案只显示当前方向，点一下切换：
+
+- **倒序**（默认）：今天在最上，越往下越久远
+- **正序**：最早的日期在最上，越往下越接近今天
+- 只改**日期分组之间的先后** —— 同一天内的条目顺序原样不动（那是你自己拖出来的，不属于日期维度）
+- 选择存在浏览器本地（`localStorage`），重开面板仍然生效
+
+**同一天内：拖拽**
 
 同一天分组内，按住卡片直接拖动即可调整先后：
 
@@ -299,6 +311,7 @@ node test/edit-check.mjs               # 编辑与图片引用计数 29 项
 node test/reorder-check.mjs            # 顺序语义 20 项（完成不跳位 / 拖拽持久化 / 老库迁移）
 node test/drag-check.mjs               # 真实浏览器拖拽 12 项（Chrome + CDP，没有 Chrome 自动跳过）
 node test/panel-mount-check.mjs        # 面板真实挂载 7 项（jsdom + React，确认拖拽实例真的挂上了）
+node test/sort-check.mjs               # 正序/倒序 23 项（jsdom + React，真点按钮：只切日期维度 / 组内顺序不动）
 node test/i18n-check.mjs               # 国际化 22 项（中英切换 / 缺词兜底）
 node test/config-check.mjs             # 同步配置 18 项
 node test/hot-swap-check.mjs           # 热替换 9 项

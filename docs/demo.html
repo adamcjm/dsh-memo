@@ -31,6 +31,7 @@ input,textarea{font:inherit;color:inherit;background:none;border:none;outline:no
 .dm-chip{padding:4px 10px;border-radius:14px;border:1px solid var(--dsw-alias-border-l1);background:var(--dsw-alias-bg-layer-1);color:var(--dsw-alias-label-secondary);font-size:11.5px;cursor:pointer;white-space:nowrap}
 .dm-chip:hover{border-color:var(--dsw-alias-border-l2);color:var(--dsw-alias-label-primary)}
 .dm-chip.on{background:color-mix(in srgb, var(--dsw-alias-brand-primary) 16%, transparent);border-color:var(--dsw-alias-brand-primary);color:var(--dsw-alias-brand-primary);font-weight:600}
+.dm-sortdir{display:inline-flex;align-items:center;gap:4px;margin-left:4px}
 .dm-sync{display:inline-flex;align-items:center;gap:6px;padding:4px 9px;border-radius:8px;border:1px solid var(--dsw-alias-border-l1);background:var(--dsw-alias-bg-layer-1);font-size:11.5px;color:var(--dsw-alias-label-secondary);cursor:pointer}
 .dm-dot{width:6px;height:6px;border-radius:50%;background:var(--dsw-alias-state-success-primary)}
 .dm-dot.off{background:var(--dsw-alias-state-idle-primary)}
@@ -158,7 +159,7 @@ input,textarea{font:inherit;color:inherit;background:none;border:none;outline:no
     <button class="dm-chip">待处理 7</button>
     <button class="dm-chip">已完成 121</button>
     <button class="dm-chip">今天 9</button>
-    <button class="dm-chip">置顶</button>
+    <button class="dm-chip">置顶</button><button class="dm-chip dm-sortdir" title="当前倒序：今天在上 · 点击切到正序"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M6 13l6 6 6-6"/></svg><span>倒序</span></button>
   </div>
 
   <div class="dm-tagbox">
@@ -262,7 +263,7 @@ input,textarea{font:inherit;color:inherit;background:none;border:none;outline:no
 
   <div class="dm-filters">
     <button class="dm-chip on">全部 129</button><button class="dm-chip">待处理 8</button>
-    <button class="dm-chip">已完成 121</button><button class="dm-chip">今天 10</button><button class="dm-chip">置顶</button>
+    <button class="dm-chip">已完成 121</button><button class="dm-chip">今天 10</button><button class="dm-chip">置顶</button><button class="dm-chip dm-sortdir" title="当前倒序：今天在上 · 点击切到正序"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M6 13l6 6 6-6"/></svg><span>倒序</span></button>
   </div>
   <div class="dm-tagbox">
     <span style="opacity:.7">标签</span>
@@ -400,7 +401,7 @@ input,textarea{font:inherit;color:inherit;background:none;border:none;outline:no
 
   <div class="dm-filters">
     <button class="dm-chip on">全部 <span id="gcount">128</span></button><button class="dm-chip">待处理 <span id="gtodo">7</span></button>
-    <button class="dm-chip">已完成 121</button><button class="dm-chip">今天</button><button class="dm-chip">置顶</button>
+    <button class="dm-chip">已完成 121</button><button class="dm-chip">今天</button><button class="dm-chip">置顶</button><button class="dm-chip dm-sortdir" title="当前倒序：今天在上 · 点击切到正序"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M6 13l6 6 6-6"/></svg><span>倒序</span></button>
   </div>
   <div class="dm-tagbox"><span style="opacity:.7">标签</span>
     <button class="dm-chip">#需求变更 <span id="gtag">23</span></button><button class="dm-chip">#接口</button>

@@ -31,6 +31,7 @@
 | **Tags** | Type `#anything` in the body and it is created automatically — not a fixed whitelist |
 | **Pinning** | Pinned notes sort first and show a pin badge plus a left accent bar on the card; the pin button lights up too |
 | **Drag & drop** | Hold and drag a card to reorder it within the same day group, with transition animation (inlined SortableJS) |
+| **Ascending / descending** | One button right of the **Pinned** chip flips the date direction: descending = today on top, ascending = oldest on top; day groups only — order inside a day never moves, and the choice is remembered locally |
 | **Search** | CJK-safe substring search plus `#tag` / `source:` / `after:` / `before:` / `has:image` / `is:open` qualifiers |
 | **Local storage** | `node:sqlite` (built into Node) — **zero external dependencies**, no native module compilation |
 | **GitHub sync** | Auto-pushes the text layer to a private repo (30s debounce), plus daily compact SQLite snapshots |
@@ -89,7 +90,7 @@ With `link:` your edits are live (refresh the page for client changes; restart f
      },
      "dependencies": {
        // ...
-       "@adamcjm/dsh-memo": "^0.2.10"                // ← add
+       "@adamcjm/dsh-memo": "^0.2.11"                // ← add
      }
    }
    ```
@@ -137,6 +138,17 @@ Hover a row and click **Edit** (the pencil); the row expands **in place** into a
 Saving regenerates the `.md` source of truth, bumps `rev`, and syncs to GitHub within 30 seconds.
 
 ### Reordering
+
+**Date dimension: ascending / descending**
+
+One button sits to the right of the **Pinned** filter chip; it shows only the current direction — click it to flip:
+
+- **Descending** (default): today on top, older as you go down
+- **Ascending**: the oldest date on top, closer to today as you go down
+- It only changes the **order of the day groups** — the order inside a single day is left untouched (that one is yours, from dragging)
+- The choice is remembered locally (`localStorage`), so it survives reopening the panel
+
+**Within one day: drag & drop**
 
 Within one day group, hold a card and drag it to change the order:
 
@@ -299,12 +311,13 @@ node test/edit-check.mjs               # editing & image refcounting, 29 checks
 node test/reorder-check.mjs            # ordering, 20 checks (done does not jump / drag persists / old-db migration)
 node test/drag-check.mjs               # real-browser drag, 12 checks (Chrome + CDP; skipped without Chrome)
 node test/panel-mount-check.mjs        # real panel mount, 7 checks (jsdom + React; proves the Sortable instance is attached)
+node test/sort-check.mjs               # ascending/descending, 23 checks (jsdom + React, real clicks: day groups only / order inside a day untouched)
 node test/i18n-check.mjs               # i18n, 22 checks (zh/en switching, missing-key fallback)
 node test/config-check.mjs             # sync config, 18 checks
 node test/hot-swap-check.mjs           # hot swap, 9 checks
 ```
 
-None of these need dsh running. The client tests need to resolve `react` / `react-dom` (they look in the project first, then borrow from a dsh profile); the two real-mount tests also need `jsdom` (installed as a devDependency by `npm i`, skipped when absent).
+None of these need dsh running. The client tests need to resolve `react` / `react-dom` (they look in the project first, then borrow from a dsh profile); the real-mount tests also need `jsdom` (installed as a devDependency by `npm i`, skipped when absent).
 
 ### Layout
 
